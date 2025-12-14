@@ -1,0 +1,5 @@
+{
+  "provider": "local",
+  "model": "wizardlm2:7b",
+  "updated_at": null
+}
