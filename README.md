@@ -367,11 +367,11 @@ python -m pytest  # (if tests are added)
 
 ## 📝 License
 
-This project is part of a hackathon submission. See individual component licenses for details.
+This project is part of a hackathon submission. Developed by Adnan.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Cline** - For CLI automation and patch generation
 - **Oumi** - For RL-based scoring capabilities
@@ -382,7 +382,7 @@ This project is part of a hackathon submission. See individual component license
 
 <div align="center">
 
-**Built with ❤️ for infrastructure reliability**
+**Built with ❤️ by Adnan for infrastructure reliability**
 
 [Report Bug](https://github.com/your-repo/issues) • [Request Feature](https://github.com/your-repo/issues)
 
