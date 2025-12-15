@@ -367,7 +367,7 @@ python -m pytest  # (if tests are added)
 
 ## 📝 License
 
-This is a personal poject but iam open to pull requests and engancements. Developed by Adnan.
+This is a personal poject but iam open to pull requests and enhancements. Developed by Adnan.
 
 ---
 
