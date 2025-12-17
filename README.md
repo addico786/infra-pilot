@@ -18,7 +18,7 @@
 ## 🚀 Features
 
 ### AI-Powered Analysis
-- **Multi-Provider Support**: Choose from Gemini (cloud), Oumi (cloud), or Ollama (local) models
+- **Multi-Provider Support**: Choose from Gemini (cloud), Oumi (rl scoring), or Ollama (local) models
 - **Model Selection**: Support for WizardLM2, Llama3, Qwen2.5, DeepSeek R1, and Gemini Pro
 - **Intelligent Detection**: AI-driven identification of misconfigurations, security risks, and drift patterns
 - **Timeline Prediction**: AI-generated timeline of potential infrastructure drift progression
