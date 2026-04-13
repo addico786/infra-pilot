@@ -7,6 +7,10 @@ class AnalyzeRequest(BaseModel):
     file_type: Literal["terraform", "kubernetes"] = Field(
         ..., description="Type of infrastructure file"
     )
+    email: Optional[str] = Field(
+        default=None,
+        description="Optional recipient email address to send analysis results to. If omitted, no email is sent."
+    )
     model: Optional[str] = Field(
         default=None,
         description="AI model to use (e.g., llama3:latest, wizardlm2:7b, qwen2.5:7b, deepseek-r1:8b, gemini-pro, oumi-rl). If None, backend uses OLLAMA_MODEL from .env for local models."

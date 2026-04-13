@@ -301,13 +301,15 @@ def _get_provider_and_model(requested_model: Optional[str] = None):
             return ("rule-engine", None, None)
     
     # Gemini models (cloud)
-    gemini_models = ["gemini-pro", "gemini-1.5-flash", "gemini-1.5-flash-lite", 
-                     "gemini-1.5-pro", "gemini-2.0-flash", "gemini-2.0-pro-exp"]
+    gemini_models = [
+        "gemini-pro",
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
+        "gemini-pro-latest",
+    ]
     if model_lower in gemini_models or model_lower.startswith("gemini"):
         if GEMINI_AVAILABLE and os.getenv("GEMINI_API_KEY"):
-            # Map friendly model name to actual model
-            # gemini-pro → gemini-1.5-pro for backward compatibility
-            actual_model = requested_model if requested_model.lower() in gemini_models else "gemini-1.5-flash"
+            actual_model = requested_model if requested_model.lower() in gemini_models else "gemini-2.5-flash"
             client = GeminiClient(model=actual_model)
             return ("gemini", actual_model, client)
         else:
@@ -323,7 +325,7 @@ def _get_provider_and_model(requested_model: Optional[str] = None):
             if OLLAMA_AVAILABLE and isinstance(client, LocalOllamaClient):
                 return ("ollama", client.model, client)
             elif GEMINI_AVAILABLE and isinstance(client, GeminiClient):
-                return ("gemini", "gemini-1.5-flash", client)
+                return ("gemini", "gemini-2.5-flash", client)
             elif OUMI_AVAILABLE and isinstance(client, OumiClient):
                 return ("oumi", "oumi:latest", client)
         return ("rule-engine", None, None)
@@ -447,7 +449,7 @@ def _get_ai_client():
     # Logic 1: AI_PROVIDER=gemini AND GEMINI_API_KEY exists
     if provider == "gemini":
         if GEMINI_AVAILABLE and has_gemini_key:
-            model = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+            model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
             print(f"[AI Provider] Gemini selected. Using Gemini AI engine with model: {model}")
             return GeminiClient(model=model)
         else:
@@ -481,7 +483,7 @@ def _get_ai_client():
     # Logic 4: Provider not set/invalid, try Gemini if key exists
     if provider not in ["gemini", "oumi", "local"]:
         if GEMINI_AVAILABLE and has_gemini_key:
-            model = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+            model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
             print(f"[AI Provider] No provider specified, but GEMINI_API_KEY found. Using Gemini AI engine with model: {model}")
             return GeminiClient(model=model)
     

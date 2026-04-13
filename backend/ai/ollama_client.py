@@ -71,7 +71,7 @@ class LocalOllamaClient:
         self,
         content: str,
         file_type: str,
-        timeout: float = 120.0
+        timeout: float = 360.0
     ) -> Dict[str, Any]:
         """
         Analyze entire infrastructure file using Ollama.
@@ -97,6 +97,8 @@ class LocalOllamaClient:
             print(f"[Ollama] Starting infrastructure analysis with model: {self.model}")
             print(f"[Ollama] File type: {file_type}")
             print(f"[Ollama] Content length: {len(content)} characters")
+            effective_timeout = self._resolve_timeout(timeout)
+            print(f"[Ollama] Effective timeout for model {self.model}: {effective_timeout}s")
             
             # Build structured prompt for infrastructure analysis
             prompt = self._build_analysis_prompt(content, file_type)
@@ -116,7 +118,7 @@ class LocalOllamaClient:
             print(f"[Ollama] Request payload model: {self.model}")
             print(f"[Ollama] Model source: {'parameter' if hasattr(self, '_model_source') else 'env/default'}")
             
-            async with httpx.AsyncClient(timeout=timeout) as client:
+            async with httpx.AsyncClient(timeout=effective_timeout) as client:
                 response = await client.post(
                     url,
                     json=payload,
@@ -173,7 +175,7 @@ class LocalOllamaClient:
             return parsed
             
         except httpx.TimeoutException as e:
-            print(f"[Ollama] Error: Request timeout: {e}")
+            print(f"[Ollama] Error: Request timeout for model {self.model}: {e}")
             return self._empty_response()
         except httpx.RequestError as e:
             print(f"[Ollama] Error: Request failed: {e}")
@@ -306,4 +308,52 @@ Return ONLY valid JSON, no markdown, no code blocks."""
             "issues": [],
             "timeline": []
         }
+
+    def _resolve_timeout(self, default_timeout: float) -> float:
+        """
+        Resolve timeout with model-specific env overrides.
+
+        Priority:
+        1) Model-specific timeout env var (if present)
+        2) Global OLLAMA_TIMEOUT_SECONDS (if present)
+        3) Function default timeout (360s)
+        """
+        global_timeout = self._read_timeout_env("OLLAMA_TIMEOUT_SECONDS")
+        model_timeout_env = self._model_timeout_env_name()
+        model_timeout = self._read_timeout_env(model_timeout_env) if model_timeout_env else None
+
+        if model_timeout is not None:
+            print(f"[Ollama] Timeout source: {model_timeout_env}")
+            return model_timeout
+        if global_timeout is not None:
+            print("[Ollama] Timeout source: OLLAMA_TIMEOUT_SECONDS")
+            return global_timeout
+        print("[Ollama] Timeout source: default")
+        return float(default_timeout)
+
+    def _model_timeout_env_name(self) -> Optional[str]:
+        model_lower = self.model.lower()
+        if model_lower.startswith("deepseek-r1"):
+            return "OLLAMA_TIMEOUT_DEEPSEEK_R1_SECONDS"
+        if model_lower.startswith("wizardlm2"):
+            return "OLLAMA_TIMEOUT_WIZARDLM2_SECONDS"
+        if model_lower.startswith("llama3"):
+            return "OLLAMA_TIMEOUT_LLAMA3_SECONDS"
+        if model_lower.startswith("qwen2.5"):
+            return "OLLAMA_TIMEOUT_QWEN2_5_SECONDS"
+        return None
+
+    def _read_timeout_env(self, env_name: str) -> Optional[float]:
+        raw = os.getenv(env_name, "").strip()
+        if not raw:
+            return None
+        try:
+            timeout = float(raw)
+        except ValueError:
+            print(f"[Ollama] Invalid timeout value for {env_name}: {raw}")
+            return None
+        if timeout <= 0:
+            print(f"[Ollama] Timeout must be positive for {env_name}: {raw}")
+            return None
+        return timeout
 

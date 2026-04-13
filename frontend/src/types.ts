@@ -7,6 +7,7 @@ export type IssueSeverity = "low" | "medium" | "high" | "critical";
 export interface AnalyzeRequest {
   content: string;
   file_type: FileType;
+  email?: string;
   model?: string;
 }
 

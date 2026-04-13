@@ -20,13 +20,10 @@ POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateCon
 The API key MUST be passed as a URL query parameter (?key=...), NOT in headers.
 This is Google's standard approach for REST API authentication.
 
-Model Names (2025):
-- gemini-pro → maps to gemini-1.5-pro (backward compatibility)
-- gemini-1.5-flash → Fast, cost-effective model (default)
-- gemini-1.5-flash-lite → Even faster, lighter model
-- gemini-1.5-pro → More capable model for complex tasks
-- gemini-2.0-flash → Latest fast model (if available)
-- gemini-2.0-pro-exp → Latest experimental pro model (if available)
+Model Names:
+- gemini-2.5-flash → Stable, recommended default
+- gemini-2.5-pro → More capable model for complex tasks
+- gemini-pro-latest → Latest Pro alias
 
 Request Payload Structure:
 {
@@ -78,22 +75,21 @@ class GeminiClient:
 
     # Model name mapping: friendly names → actual Google model IDs
     MODEL_MAP = {
-        "gemini-pro": "gemini-1.5-pro",  # Backward compatibility
-        "gemini-1.5-flash": "gemini-1.5-flash",
-        "gemini-1.5-flash-lite": "gemini-1.5-flash-lite",
-        "gemini-1.5-pro": "gemini-1.5-pro",
-        "gemini-2.0-flash": "gemini-2.0-flash-exp",  # Experimental
-        "gemini-2.0-pro-exp": "gemini-2.0-pro-exp",  # Experimental
+        "gemini-2.5-flash": "gemini-2.5-flash",
+        "gemini-2.5-pro": "gemini-2.5-pro",
+        "gemini-pro-latest": "gemini-pro-latest",
+        # Backward compatibility alias
+        "gemini-pro": "gemini-pro-latest",
     }
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "gemini-1.5-flash"):
+    def __init__(self, api_key: Optional[str] = None, model: str = "gemini-2.5-flash"):
         """
         Initialize the Gemini client.
         
         Args:
             api_key: Gemini API key. If not provided, reads from GEMINI_API_KEY env var.
-            model: Gemini model to use (default: "gemini-1.5-flash")
-                Supports: gemini-pro, gemini-1.5-flash, gemini-1.5-pro, etc.
+            model: Gemini model to use (default: "gemini-2.5-flash")
+                Supports: gemini-2.5-flash, gemini-2.5-pro, gemini-pro-latest.
         """
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         # Map friendly model name to actual Google model ID
@@ -107,6 +103,23 @@ class GeminiClient:
             self._verify_api_key()
         else:
             print("[Gemini] Initialized in fallback mode (no API key)")
+
+    def _fallback_models_for(self, model: str) -> list[str]:
+        """
+        Return fallback model candidates for NOT_FOUND responses.
+        """
+        # Prefer stable, common options first.
+        candidates = [
+            "gemini-2.5-flash",
+            "gemini-pro-latest",
+            "gemini-2.5-pro",
+        ]
+        # Keep order and uniqueness, while avoiding retrying the same model.
+        unique: list[str] = []
+        for candidate in [model] + candidates:
+            if candidate not in unique:
+                unique.append(candidate)
+        return unique
 
     def _verify_api_key(self):
         """
@@ -165,14 +178,6 @@ class GeminiClient:
             
             prompt = self._build_infrastructure_analysis_prompt(content, file_type)
             
-            # Build endpoint with API key in query string
-            # Format: POST {base_url}/models/{model}:generateContent?key={api_key}
-            endpoint = f"{self.base_url}/models/{self.model}:generateContent"
-            full_url = f"{endpoint}?key={self.api_key}"
-            
-            print(f"[Gemini] Sending request to: {endpoint}")
-            print(f"[Gemini] Full URL (with key): {endpoint}?key={'*' * 10}...")
-            
             # Build request payload according to Gemini API specification
             payload = {
                 "contents": [
@@ -185,30 +190,58 @@ class GeminiClient:
             }
             
             print("[Gemini] Request payload built")
-            
+
+            response = None
+            selected_model = self.model
             async with httpx.AsyncClient(timeout=timeout) as client:
-                # API key MUST be in query string, NOT in headers
-                response = await client.post(
-                    full_url,  # Use full URL with query string
-                    headers={"Content-Type": "application/json"},
-                    json=payload
-                )
-            
-            print(f"[Gemini] Response status: {response.status_code}")
-            
-            # Enhanced error logging
+                for candidate_model in self._fallback_models_for(self.model):
+                    endpoint = f"{self.base_url}/models/{candidate_model}:generateContent"
+                    full_url = f"{endpoint}?key={self.api_key}"
+
+                    print(f"[Gemini] Sending request to: {endpoint}")
+                    print(f"[Gemini] Full URL (with key): {endpoint}?key={'*' * 10}...")
+
+                    response = await client.post(
+                        full_url,
+                        headers={"Content-Type": "application/json"},
+                        json=payload
+                    )
+                    print(f"[Gemini] Response status ({candidate_model}): {response.status_code}")
+
+                    if response.status_code == 200:
+                        selected_model = candidate_model
+                        # Persist selected model for next requests in this process.
+                        if self.model != selected_model:
+                            print(f"[Gemini] Model switched to supported model: {selected_model}")
+                            self.model = selected_model
+                        break
+
+                    # Retry only on model-not-found style failures.
+                    should_retry = False
+                    try:
+                        error_json = response.json()
+                        message = str(error_json.get("error", {}).get("message", "")).lower()
+                        status = str(error_json.get("error", {}).get("status", "")).upper()
+                        if "not found" in message or status == "NOT_FOUND":
+                            should_retry = True
+                    except Exception:
+                        should_retry = False
+
+                    if not should_retry:
+                        break
+                    print(f"[Gemini] Model {candidate_model} unavailable, trying next fallback model")
+
+            if response is None:
+                return self._empty_infrastructure_response()
             if response.status_code != 200:
                 error_text = response.text
                 print(f"[Gemini] ERROR: HTTP {response.status_code}")
                 print(f"[Gemini] Full error response: {error_text}")
-                
-                # Try to parse error JSON for better debugging
                 try:
                     error_json = response.json()
                     print(f"[Gemini] Parsed error JSON: {json.dumps(error_json, indent=2)}")
-                except:
+                except Exception:
                     pass
-                
                 return self._empty_infrastructure_response()
             
             result = response.json()

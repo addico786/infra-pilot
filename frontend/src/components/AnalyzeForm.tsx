@@ -3,7 +3,7 @@ import { FileType } from "../types";
 import FileUpload from "./FileUpload";
 
 interface AnalyzeFormProps {
-  onAnalyze: (content: string, fileType: FileType, model: string) => void;
+  onAnalyze: (content: string, fileType: FileType, model: string, email?: string) => void;
   loading: boolean;
   error: string | null;
 }
@@ -13,11 +13,11 @@ interface AnalyzeFormProps {
  * 
  * Model Selection Flow:
  * 1. User selects a model from this dropdown
- * 2. The selected model value (e.g., "gemini-pro") is stored in selectedModel state
+ * 2. The selected model value (e.g., "gemini-2.5-flash") is stored in selectedModel state
  * 3. When user clicks "Analyze", handleSubmit() calls onAnalyze(content, fileType, selectedModel)
  * 4. App.tsx receives the model name and includes it in the API request: { content, file_type, model }
  * 5. Backend receives the model parameter and routes to the appropriate AI provider:
- *    - "gemini-pro" → GeminiClient with model="gemini-pro" (maps to gemini-1.5-pro)
+ *    - "gemini-2.5-flash" → GeminiClient with model="gemini-2.5-flash"
  *    - "llama3:latest" → LocalOllamaClient with model="llama3:latest"
  *    - "oumi-rl" → Uses Oumi RL for scoring, falls back to default provider for analysis
  * 
@@ -42,12 +42,11 @@ export const MODEL_OPTIONS = [
   // To see available models: run `ollama list` in your terminal
   { value: "wizardlm2:7b", label: "WizardLM2 7B (Local)" },
   { value: "llama3:latest", label: "Llama3 (Local)" },
-  { value: "qwen2.5:7b", label: "Qwen2.5 7B (Local)" },
-  { value: "deepseek-r1:8b", label: "DeepSeek R1 8B (Local)" },
+  { value: "deepseek-r1:latest", label: "DeepSeek R1 (Local)" },
   // Cloud models (require GEMINI_API_KEY)
-  { value: "gemini-pro", label: "Gemini Pro (Cloud)" },
-  { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash (Cloud)" },
-  { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro (Cloud)" },
+  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (Cloud)" },
+  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro (Cloud)" },
+  { value: "gemini-pro-latest", label: "Gemini Pro Latest (Cloud)" },
   // Scoring-only option
   { value: "oumi-rl", label: "Oumi RL (Local Scoring)" },
 ] as const;
@@ -65,6 +64,7 @@ export default function AnalyzeForm({ onAnalyze, loading, error }: AnalyzeFormPr
   // Users can change this via the dropdown, or backend will use OLLAMA_MODEL from .env if no model is sent
   const [selectedModel, setSelectedModel] = useState<string>("llama3:latest");
   const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
   const handleFileLoad = (fileContent: string, filename: string) => {
     setContent(fileContent);
@@ -85,9 +85,10 @@ export default function AnalyzeForm({ onAnalyze, loading, error }: AnalyzeFormPr
       return;
     }
     // Pass the selected model to the parent component
-    // The model value (e.g., "gemini-pro") will be sent to the backend API
+    // The model value (e.g., "gemini-2.5-flash") will be sent to the backend API
     // Backend will route to the appropriate AI provider based on this model name
-    onAnalyze(content.trim(), fileType, selectedModel);
+    const trimmedEmail = email.trim();
+    onAnalyze(content.trim(), fileType, selectedModel, trimmedEmail ? trimmedEmail : undefined);
   };
 
   return (
@@ -145,6 +146,21 @@ export default function AnalyzeForm({ onAnalyze, loading, error }: AnalyzeFormPr
           <br />
           <strong>Tip:</strong> If your model isn't listed, set OLLAMA_MODEL in backend .env file.
           To see available models, run: <code>ollama list</code>
+        </p>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="email">Email results to (optional)</label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          disabled={loading}
+        />
+        <p className="form-hint">
+          If provided, the backend can email the analysis summary (must be enabled in backend `.env`).
         </p>
       </div>
 

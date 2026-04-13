@@ -23,6 +23,24 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+4. Create your environment file:
+```bash
+cp .env.example .env
+```
+Then edit `.env` with your local values and API keys.
+
+For slow local models, you can tune Ollama timeouts in `.env`:
+```bash
+# Global timeout for Ollama calls
+OLLAMA_TIMEOUT_SECONDS=360
+
+# Optional model-specific overrides
+OLLAMA_TIMEOUT_DEEPSEEK_R1_SECONDS=360
+OLLAMA_TIMEOUT_WIZARDLM2_SECONDS=300
+OLLAMA_TIMEOUT_LLAMA3_SECONDS=180
+OLLAMA_TIMEOUT_QWEN2_5_SECONDS=240
+```
+
 ## Running the Server
 
 Start the server with uvicorn:
@@ -31,6 +49,28 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The API will be available at `http://localhost:8000`
+
+## Optional: Email Results via SMTP (Gmail)
+
+InfraPilot can optionally email `/analyze` results to a user-provided recipient address.
+
+- Email sending is **disabled by default** and **never blocks** the `/analyze` response.
+- Enable it via `EMAIL_ENABLED=true` and configure SMTP settings in your `.env`.
+
+### Gmail setup (recommended)
+Use a **Gmail App Password** (requires 2FA). Do not use your normal Gmail password.
+
+Add to your `.env`:
+```bash
+EMAIL_ENABLED=true
+EMAIL_FROM=your_gmail@gmail.com
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USE_TLS=true
+SMTP_USERNAME=your_gmail@gmail.com
+SMTP_PASSWORD=your_gmail_app_password
+```
 
 ## API Endpoints
 

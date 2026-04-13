@@ -38,7 +38,7 @@ function App() {
     console.log("[App] CSS loaded:", document.styleSheets.length > 0);
   }, []);
 
-  const handleAnalyze = async (content: string, fileType: FileType, model: string) => {
+  const handleAnalyze = async (content: string, fileType: FileType, model: string, email?: string) => {
     setLoading(true);
     setError(null);
     setResponse(null);
@@ -52,6 +52,9 @@ function App() {
         file_type: fileType,
         model: model,
       };
+      if (email) {
+        request.email = email;
+      }
 
       console.log("[App] Sending request to backend:", request);
 
@@ -227,7 +230,7 @@ function App() {
         fontSize: "0.875rem", 
         marginTop: "3rem" 
       }}>
-        <p>© 2025 InfraPilot. Infrastructure drift detection powered by AI.</p>
+        <p>© 2026 InfraPilot. Infrastructure drift detection powered by AI.</p>
       </footer>
 
       {/* Patch Viewer Modal */}
