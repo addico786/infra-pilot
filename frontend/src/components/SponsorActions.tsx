@@ -110,6 +110,10 @@ rules:
       <p className="sponsor-description">
         Generate configuration snippets for CI/CD and code review tools.
       </p>
+      <p className="sponsor-description" style={{ fontSize: "0.9rem", color: "#5f6368", marginTop: "-0.5rem" }}>
+        These are example snippets only—they are not connected to live Cline, Kestra, or CodeRabbit
+        services. Copy and adapt them for your own setup.
+      </p>
 
       <div className="sponsor-buttons">
         <button onClick={handleClineGenerate} className="sponsor-button">
