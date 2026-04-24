@@ -9,6 +9,8 @@ import SponsorActions from "./components/SponsorActions";
 import PatchViewer from "./components/PatchViewer";
 import Toast from "./components/Toast";
 import { useToast } from "./hooks/useToast";
+import { DottedSurface } from "./components/ui/dotted-surface";
+import AnimatedFooter from "./components/ui/animated-footer";
 
 /**
  * Main App component orchestrating the InfraPilot frontend.
@@ -77,8 +79,8 @@ function App() {
       showSuccess(`Analysis complete! Found ${data.issues.length} issues.`);
     } catch (err) {
       console.error("[App] Error:", err);
-      const errorMessage = err instanceof Error 
-        ? err.message 
+      const errorMessage = err instanceof Error
+        ? err.message
         : "Failed to analyze content. Please check that the backend is running.";
       setError(errorMessage);
       showError(errorMessage);
@@ -125,8 +127,8 @@ function App() {
       }
     } catch (err) {
       console.error("[App] Autofix error:", err);
-      const errorMessage = err instanceof Error 
-        ? err.message 
+      const errorMessage = err instanceof Error
+        ? err.message
         : "Failed to generate patch. Please try again.";
       setCurrentPatch(`Error: ${errorMessage}`);
       showError(errorMessage);
@@ -149,6 +151,7 @@ function App() {
 
   return (
     <div className="app" style={{ minHeight: "100vh", backgroundColor: "#f6f7fb" }}>
+      <DottedSurface />
       {/* Toast Container */}
       <div className="toast-container">
         {toasts.map((toast) => (
@@ -161,10 +164,10 @@ function App() {
         ))}
       </div>
 
-      <header className="app-header" style={{ 
-        backgroundColor: "#ffffff", 
-        borderBottom: "1px solid #dadce0", 
-        padding: "2rem", 
+      <header className="app-header" style={{
+        backgroundColor: "#ffffff",
+        borderBottom: "1px solid #dadce0",
+        padding: "2rem",
         textAlign: "center",
         boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
       }}>
@@ -176,12 +179,12 @@ function App() {
         </p>
       </header>
 
-      <main className="app-main" style={{ 
-        flex: 1, 
-        maxWidth: "900px", 
-        width: "100%", 
-        margin: "0 auto", 
-        padding: "2rem" 
+      <main className="app-main" style={{
+        flex: 1,
+        maxWidth: "900px",
+        width: "100%",
+        margin: "0 auto",
+        padding: "2rem"
       }}>
         <AnalyzeForm onAnalyze={handleAnalyze} loading={loading} error={error} />
 
@@ -221,17 +224,22 @@ function App() {
         )}
       </main>
 
-      <footer className="app-footer" style={{ 
-        backgroundColor: "#ffffff", 
-        borderTop: "1px solid #dadce0", 
-        padding: "1.5rem", 
-        textAlign: "center", 
-        color: "#5f6368", 
-        fontSize: "0.875rem", 
-        marginTop: "3rem" 
-      }}>
-        <p>© 2026 InfraPilot. Infrastructure drift detection powered by AI.</p>
-      </footer>
+      <AnimatedFooter
+        leftLinks={[
+          { href: "#", label: "Terms & policies" },
+          { href: "#", label: "Privacy policy" },
+        ]}
+        rightLinks={[
+          { href: "#", label: "Careers" },
+          { href: "#", label: "About" },
+          { href: "#", label: "Help Center" },
+          { href: "https://x.com", label: "Twitter" },
+          { href: "https://instagram.com", label: "Instagram" },
+          { href: "https://github.com", label: "GitHub" },
+        ]}
+        copyrightText="InfraPilot 2026. All Rights Reserved"
+        barCount={23}
+      />
 
       {/* Patch Viewer Modal */}
       {patchViewerOpen && (

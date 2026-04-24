@@ -8,6 +8,19 @@ This file lives **outside** the `frontend` and `backend` folders on purpose. It 
 
 ## Recent changes (newest first)
 
+### 2026-04-14 — Added animated footer component
+
+- **What:** Replaced the old static footer with a new animated wave footer.
+- **Where:** `frontend/src/components/ui/animated-footer.tsx`, wired in `frontend/src/App.tsx`, with styling in `frontend/src/index.css`.
+- **Extras:** Added a sample usage file at `frontend/src/components/ui/animated-footer-demo.tsx`.
+
+### 2026-04-14 — Animated dotted background integrated in frontend
+
+- **What:** Added a Three.js animated dotted surface as a live background in the React app.
+- **Where:** `frontend/src/components/ui/dotted-surface.tsx`, mounted in `frontend/src/App.tsx`, with z-layer styling in `frontend/src/index.css`.
+- **Support files:** Added `frontend/src/lib/utils.ts` (`cn` helper), `frontend/src/components/ui/demo.tsx`, and wrapped app with `ThemeProvider` in `frontend/src/main.tsx`.
+- **Dependencies:** Installed `three` and `next-themes` in frontend.
+
 ### 2026-04-14 — Integrations section disclaimer (UI)
 
 - **What:** Under **Integrations** on the dashboard, added a short note that the Cline / Kestra / CodeRabbit buttons only show **example** snippets and are **not** wired to live services.

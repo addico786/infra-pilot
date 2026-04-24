@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { ThemeProvider } from "next-themes";
 import App from "./App";
 import "./index.css";
 
@@ -21,7 +22,9 @@ try {
   
   root.render(
     <React.StrictMode>
-      <App />
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <App />
+      </ThemeProvider>
     </React.StrictMode>
   );
   
