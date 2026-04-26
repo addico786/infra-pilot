@@ -8,6 +8,56 @@ This file lives **outside** the `frontend` and `backend` folders on purpose. It 
 
 ## Recent changes (newest first)
 
+### 2026-04-25 — Removed AutoFix (Beta) button from frontend
+
+- **What:** Removed the "AutoFix (Beta)" button from `IssueCard` and cleaned up all related unused code (`handleAutofix`, `handleApplyPatch`, `PatchViewer` modal, `fileContent` state) from `DashboardPage`.
+- **Where:** `frontend/src/components/IssueCard.tsx`, `frontend/src/pages/DashboardPage.tsx`.
+
+### 2026-04-25 — Trimmed Gemini options from model dropdown
+
+- **What:** Removed "Gemini 2.5 Pro (Cloud)" and "Gemini Pro Latest (Cloud)" from the AI model selector in the dashboard, leaving only "Gemini 2.5 Flash (Cloud)" as the cloud option alongside the local models.
+- **Where:** `frontend/src/components/AnalyzeForm.tsx` (`MODEL_OPTIONS` array).
+
+### 2026-04-25 — Replaced hero with shadcn/ui-style animated hero
+
+- **What:** Swapped out the old `ContainerScroll` hero + separate `Navbar` for a fully integrated `HeroSection` with sticky header, mobile hamburger menu, email CTA, dashboard mockup, and infinite logo slider.
+- **New components:**
+  - `frontend/src/components/blocks/hero-section-3.tsx` — main hero with `HeroHeader` (responsive nav), animated headline via `AnimatedGroup`, email capture form with `Button`, `LogoCloud` with `InfiniteSlider` + `ProgressiveBlur`, and dashboard-style `AppComponent` mockup.
+  - `frontend/src/components/ui/button.tsx` — shadcn `Button` with `cva` variants.
+  - `frontend/src/components/ui/animated-group.tsx` — `framer-motion` stagger animation wrapper.
+  - `frontend/src/components/ui/infinite-slider.tsx` — auto-scrolling carousel with hover slowdown.
+  - `frontend/src/components/ui/progressive-blur.tsx` — directional gradient blur mask.
+- **Dependencies installed:** `@radix-ui/react-slot`, `class-variance-authority`, `react-use-measure`.
+- **Adaptations made for React SPA (not Next.js):**
+  - Replaced `next/link` with `react-router-dom` `Link`.
+  - Replaced `href` props with `to` props.
+  - Changed menu anchor links to match homepage section IDs (`#features`, `#how-it-works`, `#pricing`).
+  - Replaced generic logo SVG with simple "InfraPilot" text logo.
+  - Updated `AppComponent` mock text to infrastructure metrics (uptime, issues fixed).
+- **Where:** Updated `frontend/src/pages/HomePage.tsx` to import `HeroSection` from `@/components/blocks/hero-section-3` and removed the old `Navbar` + `ContainerScroll` hero block.
+
+### 2026-04-25 — Fixed missing Tailwind CSS configuration
+
+- **Problem:** Homepage rendered completely unstyled — navbar links squished together, no card borders/shadows, hero padding broken, icons raw outlines. Root cause was Tailwind installed but unconfigured.
+- **What was missing:** No `tailwind.config.js`, no `postcss.config.js`, and no `@tailwind` directives in `index.css`.
+- **Fix:** Created `frontend/tailwind.config.js` (content paths for `src/**/*.{js,ts,jsx,tsx}`), `frontend/postcss.config.js` (wires Tailwind + autoprefixer), and added `@tailwind base; @tailwind components; @tailwind utilities;` to `frontend/src/index.css`.
+- **Verification:** `npm run build` passes cleanly.
+
+### 2026-04-25 — Marketing homepage + SPA routing
+
+- **What:** Added a marketing homepage with hero scroll animation, extracted the AI dashboard to its own route, and wired everything with `react-router-dom`.
+- **Why:** The app previously opened straight into the analyzer. Now users land on a marketing page (`/`) and navigate to the dashboard (`/dashboard`). This prepares the ground for adding auth (login/signup) next.
+- **Where:**
+  - `frontend/src/App.tsx` — rewritten as a `BrowserRouter` shell with two routes (`/` and `/dashboard`).
+  - `frontend/src/pages/HomePage.tsx` — new marketing page with hero scroll animation (powered by `framer-motion`), features grid, "How it works" section, and pricing teaser. Uses the existing `AnimatedFooter`.
+  - `frontend/src/pages/DashboardPage.tsx` — extracted the old `App.tsx` analyzer UI into a dedicated page.
+  - `frontend/src/components/Navbar.tsx` — new sticky Apple-style navbar with "Features", "About", "Pricing", and a "Get Started" CTA linking to `/dashboard`. Mobile hamburger menu included.
+  - `frontend/src/components/ui/container-scroll-animation.tsx` — new scroll-driven 3D card animation component (from the Aceternity-style template), typed for TypeScript.
+  - `frontend/vite.config.ts` and `frontend/tsconfig.json` — added `@/*` path alias so imports like `@/components/ui/...` resolve correctly (shadcn convention).
+- **Dependencies:** Installed `react-router-dom` in the frontend.
+- **Design notes:** Homepage follows the Apple-inspired palette from `DESIGN.md` (`#f5f5f7`, `#0071e3`, `#1d1d1f`, `#6e6e73`, rounded cards, clean typography). Footer reuses the animated wave component already in the codebase.
+- **Cleanup:** Removed the unused `loadingPatch` state variable and its setter to silence a TypeScript warning.
+
 ### 2026-04-14 — Added animated footer component
 
 - **What:** Replaced the old static footer with a new animated wave footer.

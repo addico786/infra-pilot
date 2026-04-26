@@ -40,15 +40,13 @@ export const MODEL_OPTIONS = [
   // Local models (require Ollama running)
   // NOTE: Use ":latest" tag to use the latest version of the model, or specify version like ":7b"
   // To see available models: run `ollama list` in your terminal
+  { value: "llama3:latest", label: "Llama 3 (Local)" },
+  { value: "deepseek-r1:latest", label: "DeepSeek-R1 (Local)" },
   { value: "wizardlm2:7b", label: "WizardLM2 7B (Local)" },
-  { value: "llama3:latest", label: "Llama3 (Local)" },
-  { value: "deepseek-r1:latest", label: "DeepSeek R1 (Local)" },
   // Cloud models (require GEMINI_API_KEY)
   { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (Cloud)" },
-  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro (Cloud)" },
-  { value: "gemini-pro-latest", label: "Gemini Pro Latest (Cloud)" },
   // Scoring-only option
-  { value: "oumi-rl", label: "Oumi RL (Local Scoring)" },
+  { value: "oumi-rl", label: "Oumi RL (Specialized)" },
 ] as const;
 
 /**
