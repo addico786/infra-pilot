@@ -157,12 +157,14 @@ export default function HomePage() {
                 summaries
               </li>
             </ul>
-            <Link
-              to="/dashboard"
-              className="inline-block px-6 py-2.5 bg-[#0071e3] text-white rounded-full font-medium hover:bg-[#0077ed] transition-colors"
-            >
-              Get Started
-            </Link>
+            <div className="text-center">
+              <Link
+                to="/login"
+                className="inline-block px-8 py-3 bg-[#0071e3] text-white rounded-full text-lg font-medium hover:bg-[#0077ed] transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
         </div>
       </section>

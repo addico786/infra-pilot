@@ -36,7 +36,7 @@ export default function Navbar() {
             Pricing
           </a>
           <Link
-            to="/dashboard"
+            to="/login"
             className="px-4 py-1.5 bg-[#0071e3] text-white rounded-full text-sm font-medium hover:bg-[#0077ed] transition-colors"
           >
             Get Started
@@ -78,7 +78,7 @@ export default function Navbar() {
             Pricing
           </a>
           <Link
-            to="/dashboard"
+            to="/login"
             onClick={() => setMenuOpen(false)}
             className="text-[#0071e3] font-medium py-1"
           >

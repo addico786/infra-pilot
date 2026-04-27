@@ -32,7 +32,7 @@ export function HeroSection() {
                                         <input placeholder="Enter your email" className="h-12 w-full bg-transparent pl-12 focus:outline-none text-[#1d1d1f] placeholder:text-[#86868b]" type="email" />
                                         <div className="md:pr-1.5 lg:pr-0">
                                             <Button asChild size="sm" className="rounded-[0.5rem] bg-[#0071e3] hover:bg-[#0077ed] text-white">
-                                                <Link to="/dashboard"><span className="hidden md:block">Get Started</span><SendHorizonal className="relative mx-auto size-5 md:hidden" strokeWidth={2} /></Link>
+                                                <Link to="/login"><span className="hidden md:block">Get Started</span><SendHorizonal className="relative mx-auto size-5 md:hidden" strokeWidth={2} /></Link>
                                             </Button>
                                         </div>
                                     </div>
@@ -146,10 +146,10 @@ const HeroHeader = () => {
                             </div>
                             <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
                                 <Button asChild variant="outline" size="sm" className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link to="/dashboard"><span>Login</span></Link>
+                                    <Link to="/login"><span>Login</span></Link>
                                 </Button>
                                 <Button asChild size="sm" className={cn(isScrolled ? 'lg:inline-flex' : 'hidden', 'bg-[#0071e3] hover:bg-[#0077ed] text-white')}>
-                                    <Link to="/dashboard"><span>Get Started</span></Link>
+                                    <Link to="/login"><span>Get Started</span></Link>
                                 </Button>
                             </div>
                         </div>

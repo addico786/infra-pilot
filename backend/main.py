@@ -22,6 +22,11 @@ from services.emailer import (
     send_analysis_email,
 )
 from routes.autofix import router as autofix_router
+from routes.auth import router as auth_router
+from database import init_db
+
+# Initialize database tables
+init_db()
 
 app = FastAPI(
     title="InfraPilot Backend",
@@ -44,6 +49,7 @@ app.add_middleware(
 # ROUTERS
 # ---------------------------
 app.include_router(autofix_router)
+app.include_router(auth_router)
 
 
 @app.get("/")

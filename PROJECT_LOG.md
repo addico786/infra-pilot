@@ -8,6 +8,14 @@ This file lives **outside** the `frontend` and `backend` folders on purpose. It 
 
 ## Recent changes (newest first)
 
+### 2026-04-27 — Added authentication system with JWT and SQLite
+
+- **What:** Built a full auth system: users can register and log in. Backend uses SQLite with SQLAlchemy, bcrypt password hashing, and JWT access tokens. Frontend has a new `/login` page with an image-slider design (left panel shows rotating tech images, right panel has the form). After logging in, the token is stored in `localStorage` and the user is redirected to `/dashboard`.
+- **Where:**
+  - Backend: `backend/database.py` (SQLAlchemy User model + init), `backend/auth.py` (bcrypt + JWT), `backend/routes/auth.py` (register, login, logout, me endpoints).
+  - Frontend: `frontend/src/pages/LoginPage.tsx`, `frontend/src/components/ui/image-slider.tsx`, `frontend/src/components/ui/input.tsx`, `frontend/src/components/ui/label.tsx`.
+  - Updated `backend/main.py` to include the auth router, `frontend/src/App.tsx` to add the `/login` route, and `frontend/src/components/Navbar.tsx` to link "Get Started" to `/login`.
+
 ### 2026-04-25 — Removed AutoFix (Beta) button from frontend
 
 - **What:** Removed the "AutoFix (Beta)" button from `IssueCard` and cleaned up all related unused code (`handleAutofix`, `handleApplyPatch`, `PatchViewer` modal, `fileContent` state) from `DashboardPage`.
