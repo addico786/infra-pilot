@@ -22,7 +22,7 @@ try {
   
   root.render(
     <React.StrictMode>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <App />
       </ThemeProvider>
     </React.StrictMode>

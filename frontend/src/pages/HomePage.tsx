@@ -53,11 +53,11 @@ const viewportReveal = { once: true, amount: 0.22 };
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-[#1d1d1f]">
+    <div className="min-h-screen bg-white text-[#1d1d1f] dark:bg-[#07080c] dark:text-white">
       <HeroSection />
 
       {/* Features Section */}
-      <section id="features" className="py-24 bg-[#f5f5f7]">
+      <section id="features" className="py-24 bg-[#f5f5f7] dark:bg-[#0b0d12]">
         <motion.div
           className="max-w-5xl mx-auto px-6"
           initial="hidden"
@@ -68,7 +68,7 @@ export default function HomePage() {
           <motion.h2 variants={itemReveal} className="text-3xl md:text-5xl font-semibold text-center mb-4">
             Why InfraPilot?
           </motion.h2>
-          <motion.p variants={itemReveal} className="text-[#6e6e73] text-center text-lg mb-16 max-w-2xl mx-auto">
+          <motion.p variants={itemReveal} className="text-[#6e6e73] dark:text-zinc-300 text-center text-lg mb-16 max-w-2xl mx-auto">
             Detect misconfigurations, predict drift timelines, and auto-generate
             fixes before your infrastructure breaks.
           </motion.p>
@@ -99,7 +99,7 @@ export default function HomePage() {
       </section>
 
       {/* About */}
-      <section id="about" className="py-24 bg-white">
+      <section id="about" className="py-24 bg-white dark:bg-[#07080c]">
         <motion.div
           className="max-w-5xl mx-auto px-6"
           initial="hidden"
@@ -119,13 +119,13 @@ export default function HomePage() {
               <motion.h2 variants={itemReveal} className="text-3xl md:text-5xl font-semibold mb-4">
                 About InfraPilot
               </motion.h2>
-              <motion.p variants={itemReveal} className="text-[#6e6e73] text-lg leading-relaxed">
+              <motion.p variants={itemReveal} className="text-[#6e6e73] dark:text-zinc-300 text-lg leading-relaxed">
                 InfraPilot was born from a simple observation: infrastructure
                 drift is the silent killer of cloud reliability. We watched teams
                 spend hours in war rooms tracing misconfigurations that could
                 have been caught in minutes.
               </motion.p>
-              <motion.p variants={itemReveal} className="text-[#6e6e73] text-lg leading-relaxed">
+              <motion.p variants={itemReveal} className="text-[#6e6e73] dark:text-zinc-300 text-lg leading-relaxed">
                 Our mission is to give DevOps and platform engineers an
                 AI-powered co-pilot that continuously scans Terraform and
                 Kubernetes manifests, predicts drift before it happens, and
@@ -134,11 +134,11 @@ export default function HomePage() {
               <motion.div variants={itemReveal} className="grid grid-cols-2 gap-6 pt-4">
                 <div>
                   <div className="text-3xl font-semibold text-[#0071e3]">10k+</div>
-                  <div className="text-sm text-[#6e6e73]">Analyses run</div>
+                  <div className="text-sm text-[#6e6e73] dark:text-zinc-400">Analyses run</div>
                 </div>
                 <div>
                   <div className="text-3xl font-semibold text-[#0071e3]">99.9%</div>
-                  <div className="text-sm text-[#6e6e73]">Uptime protected</div>
+                  <div className="text-sm text-[#6e6e73] dark:text-zinc-400">Uptime protected</div>
                 </div>
               </motion.div>
             </motion.div>
@@ -147,7 +147,7 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="py-24 bg-[#f5f5f7]">
+      <section id="how-it-works" className="py-24 bg-[#f5f5f7] dark:bg-[#0b0d12]">
         <motion.div
           className="max-w-5xl mx-auto px-6"
           initial="hidden"
@@ -188,7 +188,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing teaser */}
-      <section id="pricing" className="py-24 bg-[#f5f5f7]">
+      <section id="pricing" className="py-24 bg-[#f5f5f7] dark:bg-[#0b0d12]">
         <motion.div
           className="max-w-3xl mx-auto px-6 text-center"
           initial="hidden"
@@ -199,19 +199,19 @@ export default function HomePage() {
           <motion.h2 variants={itemReveal} className="text-3xl md:text-5xl font-semibold mb-4">
             Simple pricing
           </motion.h2>
-          <motion.p variants={itemReveal} className="text-[#6e6e73] text-lg mb-12">
+          <motion.p variants={itemReveal} className="text-[#6e6e73] dark:text-zinc-300 text-lg mb-12">
             Start free. Scale as your infrastructure grows.
           </motion.p>
-          <motion.div variants={itemReveal} className="bg-white rounded-[18px] p-8 shadow-sm border border-[#d2d2d7]">
+          <motion.div variants={itemReveal} className="bg-white dark:bg-zinc-950 rounded-[18px] p-8 shadow-sm dark:shadow-black/30 border border-[#d2d2d7] dark:border-white/10">
             <h3 className="text-2xl font-semibold mb-2">Free tier</h3>
-            <p className="text-[#6e6e73] mb-6">
+            <p className="text-[#6e6e73] dark:text-zinc-300 mb-6">
               Everything you need to get started.
             </p>
             <div className="text-4xl font-semibold mb-6">
               $0
-              <span className="text-lg font-normal text-[#6e6e73]">/mo</span>
+              <span className="text-lg font-normal text-[#6e6e73] dark:text-zinc-400">/mo</span>
             </div>
-            <ul className="text-left space-y-3 mb-8 text-[#1d1d1f]">
+            <ul className="text-left space-y-3 mb-8 text-[#1d1d1f] dark:text-zinc-100">
               <li className="flex items-center gap-2">
                 <CheckCircle size={16} className="text-[#0071e3]" /> Up to 50
                 analyses / month
@@ -271,10 +271,10 @@ function FeatureCard({
   desc: string;
 }) {
   return (
-    <motion.div variants={itemReveal} className="bg-white rounded-[18px] p-6 border border-[#d2d2d7] hover:shadow-md transition-shadow">
+    <motion.div variants={itemReveal} className="bg-white dark:bg-zinc-950 rounded-[18px] p-6 border border-[#d2d2d7] dark:border-white/10 hover:shadow-md dark:hover:shadow-black/30 transition-shadow">
       <div className="mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-[#6e6e73] text-sm leading-relaxed">{desc}</p>
+      <p className="text-[#6e6e73] dark:text-zinc-300 text-sm leading-relaxed">{desc}</p>
     </motion.div>
   );
 }
@@ -293,7 +293,7 @@ function Step({
       <div className="text-2xl font-semibold text-[#0071e3]">{number}</div>
       <div>
         <h4 className="text-lg font-semibold mb-1">{title}</h4>
-        <p className="text-[#6e6e73] text-sm">{desc}</p>
+        <p className="text-[#6e6e73] dark:text-zinc-300 text-sm">{desc}</p>
       </div>
     </motion.div>
   );

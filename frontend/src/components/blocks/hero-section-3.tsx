@@ -25,12 +25,12 @@ export function HeroSection() {
                     <div className="relative mx-auto max-w-6xl px-6 pt-32 lg:pb-16 lg:pt-48">
                         <div className="relative z-10 mx-auto max-w-4xl text-center">
                             <AnimatedGroup variants={{ container: { visible: { transition: { staggerChildren: 0.05, delayChildren: 0.75 } } }, ...transitionVariants }}>
-                                <h1 className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl text-[#1d1d1f]">AI-Powered Infrastructure Drift Detection</h1>
-                                <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-[#6e6e73]">Detect misconfigurations, predict drift timelines, and auto-generate fixes before your infrastructure breaks. Powered by multi-provider AI.</p>
+                                <h1 className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl text-[#1d1d1f] dark:text-white">AI-Powered Infrastructure Drift Detection</h1>
+                                <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-[#6e6e73] dark:text-zinc-300">Detect misconfigurations, predict drift timelines, and auto-generate fixes before your infrastructure breaks. Powered by multi-provider AI.</p>
                                 <div className="mt-12 mx-auto max-w-sm">
-                                    <div className="bg-white relative grid grid-cols-[1fr_auto] items-center rounded-[1rem] border border-[#d2d2d7] p-1 shadow shadow-zinc-950/5 has-[input:focus]:ring-2 has-[input:focus]:ring-[#0071e3]/30">
-                                        <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4 text-[#86868b]" />
-                                        <input placeholder="Enter your email" className="h-11 min-w-0 w-full bg-transparent pl-12 pr-3 focus:outline-none text-[#1d1d1f] placeholder:text-[#86868b]" type="email" />
+                                    <div className="bg-white dark:bg-zinc-950/80 relative grid grid-cols-[1fr_auto] items-center rounded-[1rem] border border-[#d2d2d7] dark:border-white/10 p-1 shadow shadow-zinc-950/5 dark:shadow-black/30 has-[input:focus]:ring-2 has-[input:focus]:ring-[#0071e3]/30">
+                                        <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4 text-[#86868b] dark:text-zinc-500" />
+                                        <input placeholder="Enter your email" className="h-11 min-w-0 w-full bg-transparent pl-12 pr-3 focus:outline-none text-[#1d1d1f] dark:text-white placeholder:text-[#86868b] dark:placeholder:text-zinc-500" type="email" />
                                         <div>
                                             <Button asChild size="sm" className="h-10 rounded-[0.7rem] bg-[#0071e3] px-5 text-white shadow-sm shadow-blue-600/20 hover:bg-[#0077ed]">
                                                 <Link to="/login"><span className="hidden md:block">Get Started</span><SendHorizonal className="relative mx-auto size-5 md:hidden" strokeWidth={2} /></Link>
@@ -39,13 +39,13 @@ export function HeroSection() {
                                     </div>
                                 </div>
                                 <div aria-hidden className="relative mx-auto mt-32 max-w-2xl to-transparent to-55% text-left">
-                                    <div className="bg-white border-[#d2d2d7]/50 absolute inset-0 mx-auto w-80 -translate-x-3 -translate-y-12 rounded-[2rem] border p-2 [mask-image:linear-gradient(to_bottom,#000_50%,transparent_90%)] sm:-translate-x-6">
+                                    <div className="bg-white dark:bg-zinc-950 border-[#d2d2d7]/50 dark:border-white/10 absolute inset-0 mx-auto w-80 -translate-x-3 -translate-y-12 rounded-[2rem] border p-2 [mask-image:linear-gradient(to_bottom,#000_50%,transparent_90%)] sm:-translate-x-6">
                                         <div className="relative h-96 overflow-hidden rounded-[1.5rem] border p-2 pb-12 before:absolute before:inset-0 before:bg-[repeating-linear-gradient(-45deg,var(--border),var(--border)_1px,transparent_1px,transparent_6px)] before:opacity-50"></div>
                                     </div>
-                                    <div className="bg-[#f5f5f7] border-[#d2d2d7]/50 mx-auto w-80 translate-x-4 rounded-[2rem] border p-2 backdrop-blur-3xl [mask-image:linear-gradient(to_bottom,#000_50%,transparent_90%)] sm:translate-x-8">
-                                        <div className="bg-white space-y-2 overflow-hidden rounded-[1.5rem] border p-2 shadow-xl">
+                                    <div className="bg-[#f5f5f7] dark:bg-zinc-900 border-[#d2d2d7]/50 dark:border-white/10 mx-auto w-80 translate-x-4 rounded-[2rem] border p-2 backdrop-blur-3xl [mask-image:linear-gradient(to_bottom,#000_50%,transparent_90%)] sm:translate-x-8">
+                                        <div className="bg-white dark:bg-zinc-950 space-y-2 overflow-hidden rounded-[1.5rem] border border-[#d2d2d7] dark:border-white/10 p-2 shadow-xl dark:shadow-black/40">
                                             <AppComponent />
-                                            <div className="bg-[#f5f5f7] rounded-[1rem] p-4 pb-16"></div>
+                                            <div className="bg-[#f5f5f7] dark:bg-white/5 rounded-[1rem] p-4 pb-16"></div>
                                         </div>
                                     </div>
                                     <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] mix-blend-overlay [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-5" />
@@ -70,24 +70,24 @@ const AppComponent = () => {
                         <path fill="#ffb02e" d="M23 21.851c0 4.042-3.519 7.291-7.799 7.144c-4.62-.156-7.788-4.384-7.11-8.739C9.07 14.012 15.48 10 15.48 10S23 14.707 23 21.851" />
                     </g>
                 </svg>
-                <div className="text-sm font-medium text-[#1d1d1f]">InfraPilot</div>
+                <div className="text-sm font-medium text-[#1d1d1f] dark:text-white">InfraPilot</div>
             </div>
             <div className="space-y-3">
-                <div className="text-[#1d1d1f] border-b border-[#d2d2d7]/50 pb-3 text-sm font-medium">Your infrastructure is 23% healthier than last month.</div>
+                <div className="text-[#1d1d1f] dark:text-white border-b border-[#d2d2d7]/50 dark:border-white/10 pb-3 text-sm font-medium">Your infrastructure is 23% healthier than last month.</div>
                 <div className="space-y-3">
                     <div className="space-y-1">
                         <div className="space-x-1">
-                            <span className="text-[#1d1d1f] align-baseline text-xl font-medium">98.2%</span>
-                            <span className="text-[#6e6e73] text-xs">Uptime</span>
+                            <span className="text-[#1d1d1f] dark:text-white align-baseline text-xl font-medium">98.2%</span>
+                            <span className="text-[#6e6e73] dark:text-zinc-400 text-xs">Uptime</span>
                         </div>
                         <div className="flex h-5 items-center rounded bg-gradient-to-l from-emerald-400 to-indigo-600 px-2 text-xs text-white">2024</div>
                     </div>
                     <div className="space-y-1">
                         <div className="space-x-1">
-                            <span className="text-[#1d1d1f] align-baseline text-xl font-medium">12</span>
-                            <span className="text-[#6e6e73] text-xs">Issues Fixed</span>
+                            <span className="text-[#1d1d1f] dark:text-white align-baseline text-xl font-medium">12</span>
+                            <span className="text-[#6e6e73] dark:text-zinc-400 text-xs">Issues Fixed</span>
                         </div>
-                        <div className="text-[#1d1d1f] bg-[#f5f5f7] flex h-5 w-2/3 items-center rounded px-2 text-xs">2023</div>
+                        <div className="text-[#1d1d1f] dark:text-zinc-300 bg-[#f5f5f7] dark:bg-white/10 flex h-5 w-2/3 items-center rounded px-2 text-xs">2023</div>
                     </div>
                 </div>
             </div>
@@ -156,7 +156,7 @@ const HeroHeader = () => {
                     className={cn(
                         'mx-auto mt-2 px-5 lg:px-8',
                         isScrolled
-                            ? 'max-w-4xl bg-white/80 rounded-2xl border border-[#d2d2d7] shadow-lg shadow-zinc-950/5 backdrop-blur-lg lg:px-5'
+                            ? 'max-w-4xl bg-white/80 dark:bg-zinc-950/80 rounded-2xl border border-[#d2d2d7] dark:border-white/10 shadow-lg shadow-zinc-950/5 dark:shadow-black/30 backdrop-blur-lg lg:px-5'
                             : 'max-w-5xl'
                     )}
                 >
@@ -219,7 +219,7 @@ const HeroHeader = () => {
                                         }}
                                         whileHover={{ y: -2 }}
                                     >
-                                        <a href={item.href} className="group/link relative block py-2 text-[#6e6e73] duration-200 hover:text-[#1d1d1f]">
+                                        <a href={item.href} className="group/link relative block py-2 text-[#6e6e73] dark:text-zinc-300 duration-200 hover:text-[#1d1d1f] dark:hover:text-white">
                                             <span>{item.name}</span>
                                             <span className="absolute inset-x-0 -bottom-0.5 mx-auto h-px w-0 bg-[#0071e3] transition-all duration-300 group-hover/link:w-full" />
                                         </a>
@@ -265,7 +265,7 @@ const HeroHeader = () => {
                     <AnimatePresence>
                         {menuState && (
                             <motion.div
-                                className="mb-4 origin-top overflow-hidden rounded-3xl border border-[#d2d2d7] bg-white p-6 shadow-2xl shadow-zinc-300/20 will-change-transform lg:hidden"
+                                className="mb-4 origin-top overflow-hidden rounded-3xl border border-[#d2d2d7] dark:border-white/10 bg-white dark:bg-zinc-950 p-6 shadow-2xl shadow-zinc-300/20 dark:shadow-black/40 will-change-transform lg:hidden"
                                 initial={{ opacity: 0, scaleY: 0.96, y: -8 }}
                                 animate={{ opacity: 1, scaleY: 1, y: 0 }}
                                 exit={{ opacity: 0, scaleY: 0.96, y: -8 }}
@@ -291,7 +291,7 @@ const HeroHeader = () => {
                                             <a
                                                 href={item.href}
                                                 onClick={() => setMenuState(false)}
-                                                className="block text-[#6e6e73] duration-150 hover:text-[#1d1d1f]"
+                                                className="block text-[#6e6e73] dark:text-zinc-300 duration-150 hover:text-[#1d1d1f] dark:hover:text-white"
                                             >
                                                 <span>{item.name}</span>
                                             </a>
@@ -322,11 +322,11 @@ const HeroHeader = () => {
 
 const LogoCloud = () => {
     return (
-        <section className="bg-white pb-16 md:pb-32">
+        <section className="bg-white dark:bg-[#07080c] pb-16 md:pb-32">
             <div className="group relative m-auto max-w-6xl px-6">
                 <div className="flex flex-col items-center md:flex-row">
                     <div className="inline md:max-w-44 md:border-r md:border-[#d2d2d7] md:pr-6">
-                        <p className="text-end text-sm text-[#6e6e73]">Powering the best teams</p>
+                        <p className="text-end text-sm text-[#6e6e73] dark:text-zinc-400">Powering the best teams</p>
                     </div>
                     <div className="relative py-6 md:w-[calc(100%-11rem)]">
                         <InfiniteSlider durationOnHover={20} duration={40} gap={112}>
@@ -349,6 +349,6 @@ const LogoCloud = () => {
 
 const Logo = ({ className }: { className?: string }) => {
     return (
-        <span className={cn('text-xl font-semibold tracking-tight text-[#1d1d1f]', className)}>InfraPilot</span>
+        <span className={cn('text-xl font-semibold tracking-tight text-[#1d1d1f] dark:text-white', className)}>InfraPilot</span>
     )
 }
