@@ -8,6 +8,20 @@ This file lives **outside** the `frontend` and `backend` folders on purpose. It 
 
 ## Recent changes (newest first)
 
+### 2026-04-27 — Refreshed docs, homepage polish, and system theme support
+
+- **What:** Updated the top-level `README.md` so it matches the current project: React/Vite frontend, FastAPI backend, auth, SQLite, AI providers, email results, AutoFix/Cline endpoints, environment setup, API examples, and a current architecture diagram.
+- **Homepage polish:** Fixed broken customer/logo images under the hero by replacing unreliable remote logo URLs with self-contained generated SVG logo images. Added smoother scroll-triggered reveal animations to the homepage body sections. Improved navbar motion, tightened the scrolled navbar width, fixed the hero email CTA button spacing, and optimized the mobile hamburger animation so it does not stutter as much in DevTools.
+- **Footer:** Reworked the footer content into a more polished InfraPilot product footer while keeping the original animated wave style that fit the page best.
+- **Theme support:** Fixed theme setup so the app now respects the user's system light/dark mode. Removed the duplicate `ThemeProvider`, set the active provider to `defaultTheme="system"`, enabled Tailwind class-based dark mode, and added dark-mode styling to the homepage, hero/navbar, and sign-in/sign-up page.
+- **Where:**
+  - Docs: `README.md`, `PROJECT_LOG.md`
+  - Theme wiring: `frontend/src/main.tsx`, `frontend/src/App.tsx`, `frontend/tailwind.config.js`
+  - Homepage/hero/nav/logo cloud: `frontend/src/pages/HomePage.tsx`, `frontend/src/components/blocks/hero-section-3.tsx`
+  - Footer: `frontend/src/components/ui/animated-footer.tsx`, `frontend/src/index.css`
+  - Auth page theme pass: `frontend/src/pages/LoginPage.tsx`
+- **Verification:** Frontend production builds were run with `npm run build` after the UI/theme changes.
+
 ### 2026-04-27 — Added authentication system with JWT and SQLite
 
 - **What:** Built a full auth system: users can register and log in. Backend uses SQLite with SQLAlchemy, bcrypt password hashing, and JWT access tokens. Frontend has a new `/login` page with an image-slider design (left panel shows rotating tech images, right panel has the form). After logging in, the token is stored in `localStorage` and the user is redirected to `/dashboard`.
