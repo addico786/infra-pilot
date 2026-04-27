@@ -1,390 +1,359 @@
-# InfraPilot — AI-Powered Infrastructure Drift Detection & AutoFix
+# InfraPilot
 
-<div align="center">
+AI-assisted infrastructure drift detection for Terraform and Kubernetes. InfraPilot combines a React dashboard, a FastAPI backend, local/cloud AI providers, rule-based fallbacks, Oumi severity scoring, and Cline-powered patch generation.
 
-![InfraPilot](https://img.shields.io/badge/InfraPilot-AI%20Drift%20Detection-blue)
-![Python](https://img.shields.io/badge/Python-3.10+-green)
-![React](https://img.shields.io/badge/React-18+-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green)
+## What It Does
 
-**Intelligent infrastructure analysis powered by multiple AI providers with automatic fix generation**
+- Analyzes Terraform and Kubernetes manifests for drift, misconfiguration, security risks, and operational anti-patterns.
+- Supports local Ollama models, Gemini cloud models, Oumi integrations, and a rule-engine fallback when AI is unavailable.
+- Produces a drift score, timeline forecast, issue list, severity labels, Oumi scores, and fix suggestions.
+- Provides an authenticated dashboard with a chat-style analysis workflow.
+- Can optionally email analysis results through SMTP.
+- Can generate and apply unified diff patches through the AutoFix/Cline integration.
 
-[Features](#-features) • [Quick Start](#-quick-start) • [Architecture](#-architecture) • [Sponsor Integrations](#-sponsor-integrations)
+## Tech Stack
 
-</div>
+- Frontend: React 19, TypeScript, Vite, React Router, Tailwind CSS, Framer Motion, lucide-react, Recharts, Three.js
+- Backend: FastAPI, Pydantic, SQLAlchemy, SQLite, JWT auth, bcrypt, python-jose
+- AI providers: Ollama, Gemini, Oumi, Oumi RL scorer
+- Automation: Cline workflow scripts for patch generation and patch application
 
----
-
-## 🚀 Features
-
-### AI-Powered Analysis
-- **Multi-Provider Support**: Choose from Gemini (cloud), Oumi (rl scoring), or Ollama (local) models
-- **Model Selection**: Support for WizardLM2, Llama3, Qwen2.5, DeepSeek R1, and Gemini Pro
-- **Intelligent Detection**: AI-driven identification of misconfigurations, security risks, and drift patterns
-- **Timeline Prediction**: AI-generated timeline of potential infrastructure drift progression
-
-### Local LLM Support
-- **Ollama Integration**: Run analysis completely offline using local models
-- **Multiple Models**: Support for wizardlm2:7b, llama3:8b, qwen2.5:7b, deepseek-r1:8b
-- **Privacy-First**: No data leaves your machine when using local models
-
-### Oumi RL Scoring
-- **Reinforcement Learning**: Advanced severity scoring using fine-tuned models
-- **Context-Aware**: RL models learn from infrastructure patterns to provide accurate risk assessment
-- **Adaptive**: Scoring improves over time with more usage
-
-### AutoFix Capabilities
-- **Cline CLI Integration**: Generate patches automatically using Cline workflows
-- **Unified Diff Format**: Standard patch format for easy review and application
-- **One-Click Fixes**: Apply generated patches directly from the UI
-
-### Timeline Simulation
-- **Progressive Drift Modeling**: Predict how issues will evolve over time
-- **Severity Tracking**: Visualize severity progression across timeline events
-- **AI-Enhanced**: Timeline events enriched with AI predictions
-
----
-
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        Frontend (React)                      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ Model Select │  │  Analysis UI │  │  AutoFix UI  │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└────────────────────────────┬────────────────────────────────┘
-                             │ HTTP/REST
-┌────────────────────────────┴────────────────────────────────┐
-│                    Backend (FastAPI)                         │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │              Analyzer Service                         │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────┐   │   │
-│  │  │ AI Analysis   │→ │ Rule Engine  │→ │ RL Score │   │   │
-│  │  └──────────────┘  └──────────────┘  └──────────┘   │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                                                               │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ Gemini Client │  │ Oumi Client   │  │ Ollama Client│      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│                                                               │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │              AutoFix Service                         │   │
-│  │  ┌──────────────┐  ┌──────────────┐                 │   │
-│  │  │ Cline Agent  │→ │ Patch Gen    │                 │   │
-│  │  └──────────────┘  └──────────────┘                 │   │
-│  └──────────────────────────────────────────────────────┘   │
-└───────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────┐
+│                         React + Vite Frontend                      │
+│                                                                    │
+│  Home Page        Login/Register        Protected Dashboard         │
+│     │                  │                       │                    │
+│     │                  │                       ├─ Paste/attach IaC  │
+│     │                  │                       ├─ Select file type  │
+│     │                  │                       ├─ Select AI model   │
+│     │                  │                       └─ Optional email    │
+└─────┴──────────────────┴───────────────────────┬────────────────────┘
+                                                   │ HTTP/JSON
+                                                   ▼
+┌────────────────────────────────────────────────────────────────────┐
+│                          FastAPI Backend                           │
+│                                                                    │
+│  main.py                                                           │
+│   ├─ CORS middleware                                               │
+│   ├─ /auth router                                                  │
+│   ├─ /analyze endpoint                                             │
+│   └─ /autofix router                                               │
+│                                                                    │
+│  Auth Layer                                                        │
+│   ├─ Email/password registration                                   │
+│   ├─ JWT token login                                               │
+│   └─ SQLite users table                                            │
+│                                                                    │
+│  Analyzer Service                                                  │
+│   ├─ Provider/model selection                                      │
+│   ├─ AI full-file analysis                                         │
+│   ├─ Terraform/Kubernetes rule fallback                            │
+│   ├─ Oumi RL issue scoring                                         │
+│   └─ Drift score + timeline response                               │
+│                                                                    │
+│  Optional Email Service                                            │
+│   └─ SMTP result delivery after /analyze returns                    │
+└───────────────────────────────┬────────────────────────────────────┘
+                                │
+               ┌────────────────┼────────────────┐
+               ▼                ▼                ▼
+      ┌────────────────┐ ┌──────────────┐ ┌──────────────┐
+      │ Ollama Local   │ │ Gemini Cloud │ │ Oumi / RL    │
+      │ localhost:11434│ │ API key      │ │ API/scoring  │
+      └────────────────┘ └──────────────┘ └──────────────┘
+
+┌────────────────────────────────────────────────────────────────────┐
+│                         AutoFix Path                               │
+│                                                                    │
+│  /autofix/generate ──► ClineAgent ──► Cline workflow/script         │
+│          │                                │                         │
+│          ▼                                ▼                         │
+│   Unified diff patch              scripts/run_cline.sh              │
+│          │                                                          │
+│          ▼                                                          │
+│  /autofix/apply ─────► scripts/apply_patch.sh ─────► target file    │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
-### Component Flow
+### Request Flow
 
-1. **User Input** → Frontend receives infrastructure code and model selection
-2. **AI Analysis** → Backend routes to selected AI provider (Gemini/Oumi/Ollama)
-3. **Issue Detection** → AI identifies misconfigurations and drift patterns
-4. **RL Scoring** → Oumi RL provides severity scores for each issue
-5. **Timeline Generation** → AI predicts progressive drift timeline
-6. **AutoFix** → Cline generates patches for identified issues
-7. **Response** → Frontend displays results with provider/model metadata
+1. A user registers or logs in through the frontend.
+2. The dashboard sends infrastructure content to `POST /analyze`.
+3. The backend chooses an AI provider from the selected model or `.env`.
+4. AI analysis runs first; if unavailable, the Terraform/Kubernetes rule engine runs.
+5. Oumi scoring is added to each issue.
+6. The API returns a drift score, timeline, issues, provider, and model metadata.
+7. If email is enabled and the user supplied an address, results are sent asynchronously.
+8. For fixes, the frontend/backend can call AutoFix endpoints to generate or apply unified diffs.
 
----
+## Project Structure
 
-## 🚀 Quick Start
+```text
+infra-pilot/
+├── backend/
+│   ├── ai/                     # Gemini, Ollama, Oumi, Cline, and Oumi trainer clients
+│   ├── routes/                 # Auth and AutoFix API routers
+│   ├── services/
+│   │   ├── analyzer.py         # Main analysis orchestration
+│   │   ├── emailer.py          # Optional email notifications
+│   │   └── rules/              # Terraform and Kubernetes rule fallback
+│   ├── auth.py                 # JWT/password auth helpers
+│   ├── database.py             # SQLAlchemy + SQLite setup
+│   ├── main.py                 # FastAPI app
+│   ├── models.py               # API request/response models
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   │   ├── components/         # Analysis UI, issue cards, timeline, auth guard
+│   │   ├── components/ui/      # Reusable UI and animated chat interface
+│   │   ├── pages/              # Home, login/register, dashboard
+│   │   ├── App.tsx             # Routes
+│   │   └── types.ts
+│   ├── package.json
+│   └── vite.config.ts
+├── cline/workflows/autofix.json
+├── scripts/run_cline.sh
+├── scripts/apply_patch.sh
+├── DESIGN.md
+└── PROJECT_LOG.md
+```
 
-### Prerequisites
+## Prerequisites
 
-- **Python 3.10+**
-- **Node.js 18+** and npm
-- **Ollama** (optional, for local models) - [Install Ollama](https://ollama.ai)
-- **API Keys** (optional, for cloud models):
-  - `GEMINI_API_KEY` for Gemini
-  - `OUMI_API_KEY` for Oumi
+- Python 3.10+
+- Node.js 18+ and npm
+- Ollama, if you want local model analysis
+- Optional API keys for Gemini or Oumi
+- Optional Cline/VS Code setup for AutoFix patch generation
 
-### Backend Setup
+## Backend Setup
 
 ```bash
-# Navigate to backend directory
-cd backend
-
-# Create virtual environment
+cd infra-pilot/backend
 python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On Linux/Mac:
 source venv/bin/activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Set environment variables (create .env file)
-echo "AI_PROVIDER=ollama" > .env
-echo "OLLAMA_MODEL=llama3" >> .env
-# Or for cloud models:
-# echo "AI_PROVIDER=gemini" > .env
-# echo "GEMINI_API_KEY=your_key_here" >> .env
-
-# Run backend server
+cp .env.example .env
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Frontend Setup
+On Windows PowerShell, activate the virtual environment with:
+
+```powershell
+venv\Scripts\Activate.ps1
+```
+
+The backend runs at `http://localhost:8000`.
+
+Interactive API docs are available at:
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## Frontend Setup
 
 ```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install dependencies
+cd infra-pilot/frontend
 npm install
-
-# Start development server
 npm run dev
 ```
 
-### Running Ollama Models
+The frontend runs at `http://localhost:5173` unless Vite selects another port. The current frontend calls the backend at `http://localhost:8000`.
+
+## Environment Configuration
+
+Copy `backend/.env.example` to `backend/.env` and adjust values as needed.
 
 ```bash
-# Install Ollama (if not already installed)
-# Visit https://ollama.ai for installation instructions
+AI_PROVIDER=local
+OLLAMA_MODEL=llama3:latest
+OLLAMA_TIMEOUT_SECONDS=360
 
-# Pull a model
-ollama pull llama3
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.5-flash
+
+OUMI_API_KEY=
+CLINE_PATH=
+
+EMAIL_ENABLED=false
+EMAIL_FROM=your_gmail@gmail.com
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USE_TLS=true
+SMTP_USERNAME=your_gmail@gmail.com
+SMTP_PASSWORD=your_gmail_app_password
+```
+
+Provider behavior:
+
+- `AI_PROVIDER=local` uses Ollama through `http://localhost:11434`.
+- `AI_PROVIDER=gemini` uses Gemini when `GEMINI_API_KEY` is configured.
+- `AI_PROVIDER=oumi` uses Oumi when `OUMI_API_KEY` is configured.
+- If the selected provider is unavailable, analysis falls back to the local rule engine.
+
+## Local Ollama Models
+
+Install Ollama, then pull any models you want to use from the dashboard:
+
+```bash
+ollama pull llama3:latest
+ollama pull deepseek-r1:latest
 ollama pull wizardlm2:7b
 ollama pull qwen2.5:7b
-ollama pull deepseek-r1:8b
+```
 
-# Start Ollama server (usually runs automatically)
+Make sure Ollama is running before using local analysis:
+
+```bash
 ollama serve
 ```
 
-### Testing AutoFix
+## Authentication
 
-1. Analyze a Terraform or Kubernetes file
-2. Click "AutoFix (Beta)" on any issue
-3. Review the generated patch in the modal
-4. Copy or apply the patch
+The app includes simple email/password authentication backed by SQLite.
 
----
+Available auth endpoints:
 
-## 🔧 Environment Variables
+- `POST /auth/register`
+- `POST /auth/token`
+- `POST /auth/logout`
+- `GET /auth/me`
 
-### Backend (.env)
+The dashboard route is protected on the frontend. Users register or log in through `/login`; successful login stores a bearer token client-side.
 
-```bash
-# AI Provider Selection
-AI_PROVIDER=ollama          # Options: ollama, gemini, oumi
+## API Endpoints
 
-# Ollama Configuration (for local models)
-OLLAMA_MODEL=llama3        # Default model for Ollama
+### `GET /`
 
-# Cloud API Keys (optional)
-GEMINI_API_KEY=your_key_here
-OUMI_API_KEY=your_key_here
-```
+Health check.
 
-### Frontend
+### `POST /analyze`
 
-No environment variables required. Backend URL is configured in `App.tsx` (default: `http://localhost:8000`).
+Analyze Terraform or Kubernetes content.
 
----
-
-## 📊 API Endpoints
-
-### POST `/analyze`
-
-Analyze infrastructure content for drift and issues.
-
-**Request:**
 ```json
 {
-  "content": "terraform code here...",
+  "content": "resource \"aws_instance\" \"example\" {}",
   "file_type": "terraform",
-  "model": "wizardlm2:7b"
+  "model": "llama3:latest",
+  "email": "optional@example.com"
 }
 ```
 
-**Response:**
+Response shape:
+
 ```json
 {
   "drift_score": 0.75,
-  "timeline": [...],
-  "issues": [...],
+  "timeline": [],
+  "issues": [],
   "provider": "ollama",
-  "model": "wizardlm2:7b"
+  "model": "llama3:latest"
 }
 ```
 
-### POST `/autofix/generate`
+### `POST /autofix/generate`
 
-Generate a patch for an issue.
+Generate a unified diff patch for a detected issue.
 
-**Request:**
 ```json
 {
-  "issue": {...},
-  "file_content": "...",
+  "issue": {
+    "title": "Public security group",
+    "description": "Ingress allows 0.0.0.0/0",
+    "fix_suggestion": "Restrict ingress CIDR ranges",
+    "resource": "aws_security_group.web"
+  },
+  "file_content": "terraform content here",
   "file_path": "main.tf"
 }
 ```
 
-**Response:**
+### `POST /autofix/apply`
+
+Apply a generated patch to a workspace file.
+
 ```json
 {
-  "success": true,
   "diff": "--- a/main.tf\n+++ b/main.tf\n...",
-  "message": "Patch generated successfully"
+  "target_file": "main.tf",
+  "workspace_path": "/path/to/workspace"
 }
 ```
 
----
+## Analysis Pipeline
 
-## 🏆 Sponsor Integrations
+1. The frontend sends infrastructure content, file type, selected model, and optional email to `/analyze`.
+2. The backend chooses the provider from the requested model or `.env`.
+3. The selected AI client attempts full-file analysis.
+4. If AI analysis fails or returns no issues, the Terraform/Kubernetes rule engine runs.
+5. Oumi scoring is added to each issue.
+6. The backend returns drift score, timeline events, issue details, provider, and model metadata.
+7. If email is enabled and an email address was provided, results are sent in the background.
 
-### Infinity Build Award — Cline CLI Integration
+## AutoFix / Cline Integration
 
-InfraPilot integrates **Cline CLI** for automated patch generation:
+InfraPilot includes an AutoFix path for infrastructure issues:
 
-- **Workflow Automation**: Uses Cline workflows (`cline/workflows/autofix.json`) to generate fixes
-- **CLI Integration**: Scripts in `scripts/run_cline.sh` demonstrate Cline command execution
-- **Patch Generation**: Automatically generates unified diff patches for infrastructure issues
-- **One-Click Application**: Patches can be applied directly from the UI
+- `backend/ai/cline_agent.py` wraps the Cline workflow.
+- `backend/routes/autofix.py` exposes patch generation and patch application endpoints.
+- `cline/workflows/autofix.json` defines the workflow.
+- `scripts/run_cline.sh` and `scripts/apply_patch.sh` provide shell automation.
 
-**Files:**
-- `backend/ai/cline_agent.py` - Cline integration agent
-- `backend/routes/autofix.py` - AutoFix API endpoints
-- `cline/workflows/autofix.json` - Cline workflow definition
-- `scripts/run_cline.sh` - Cline CLI automation script
+AutoFix returns unified diff patches so generated changes can be reviewed before applying.
 
-### Iron Intelligence Award — Oumi RL Integration
+## Email Notifications
 
-InfraPilot uses **Oumi Reinforcement Learning** for intelligent issue scoring:
-
-- **RL-Based Scoring**: Fine-tuned models provide context-aware severity assessment
-- **Adaptive Learning**: Models improve with usage patterns
-- **Local Models**: Supports Qwen 0.5B and Llama 3 8B for RL scoring
-- **Severity Adjustment**: RL models can adjust severity based on context
-
-**Files:**
-- `backend/ai/oumi_trainer.py` - Oumi RL training and scoring
-- `backend/services/analyzer.py` - Integration of RL scoring into analysis pipeline
-
-### Local LLM Category — Ollama Integration
-
-InfraPilot fully supports **local LLM inference** via Ollama:
-
-- **Privacy-First**: Complete offline analysis capability
-- **Multiple Models**: Support for wizardlm2:7b, llama3:8b, qwen2.5:7b, deepseek-r1:8b
-- **No API Keys Required**: Works entirely locally
-- **Model Selection UI**: Frontend dropdown for easy model selection
-
-**Files:**
-- `backend/ai/ollama_client.py` - Ollama API client
-- `frontend/src/components/AnalyzeForm.tsx` - Model selector UI
-
----
-
-## 📁 Project Structure
-
-```
-we_make_devs/
-├── backend/
-│   ├── ai/                    # AI client implementations
-│   │   ├── gemini_client.py   # Google Gemini integration
-│   │   ├── ollama_client.py   # Local Ollama integration
-│   │   ├── oumi_client.py     # Oumi AI integration
-│   │   ├── oumi_trainer.py    # Oumi RL scoring
-│   │   └── cline_agent.py     # Cline CLI agent
-│   ├── routes/
-│   │   └── autofix.py         # AutoFix API endpoints
-│   ├── services/
-│   │   ├── analyzer.py        # Main analysis orchestrator
-│   │   └── rules/             # Rule-based detection (fallback)
-│   ├── models.py              # Pydantic models
-│   ├── main.py                # FastAPI application
-│   └── requirements.txt        # Python dependencies
-├── frontend/
-│   ├── src/
-│   │   ├── components/        # React components
-│   │   │   ├── AnalyzeForm.tsx
-│   │   │   ├── SummaryCard.tsx
-│   │   │   ├── IssueCard.tsx
-│   │   │   ├── PatchViewer.tsx
-│   │   │   └── ...
-│   │   ├── hooks/
-│   │   │   └── useToast.ts    # Toast notification hook
-│   │   ├── App.tsx            # Main app component
-│   │   └── types.ts            # TypeScript types
-│   └── package.json
-├── cline/
-│   └── workflows/
-│       └── autofix.json       # Cline workflow definition
-├── scripts/
-│   ├── run_cline.sh           # Cline CLI script
-│   └── apply_patch.sh         # Patch application script
-└── docs/
-    └── SUBMISSION.md           # Submission documentation
-```
-
----
-
-## 🧪 Testing
-
-### Backend Testing
+Email delivery is disabled by default and never blocks analysis responses. To enable it:
 
 ```bash
-cd backend
-python -m pytest  # (if tests are added)
+EMAIL_ENABLED=true
+EMAIL_FROM=your_gmail@gmail.com
+SMTP_USERNAME=your_gmail@gmail.com
+SMTP_PASSWORD=your_gmail_app_password
 ```
 
-### Manual Testing
+For Gmail, use an App Password rather than your normal account password.
 
-1. Start backend: `uvicorn main:app --reload`
-2. Start frontend: `npm run dev`
-3. Open `http://localhost:5173`
-4. Paste Terraform/Kubernetes code
-5. Select AI model
-6. Click "Analyze"
-7. Review results and test AutoFix
+## Development Commands
 
----
+Backend:
 
-## 🛠️ Development
+```bash
+cd infra-pilot/backend
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
-### Adding New AI Providers
+Frontend:
 
-1. Create client in `backend/ai/` (e.g., `new_provider_client.py`)
-2. Implement `analyze_infrastructure()` method
-3. Update `_get_provider_and_model()` in `analyzer.py`
-4. Add model option to frontend `MODEL_OPTIONS`
+```bash
+cd infra-pilot/frontend
+npm run dev
+npm run build
+```
 
-### Extending Rule Engine
+Manual test flow:
 
-1. Add rules to `backend/services/rules/terraform_rules.py` or `k8s_rules.py`
-2. Rules return dict with: `rule_id`, `title`, `description`, `severity`, `resource`, `raw_detected_data`
+1. Start the backend.
+2. Start the frontend.
+3. Open the frontend in the browser.
+4. Register or log in.
+5. Paste or attach a Terraform/Kubernetes file.
+6. Select a model and file type.
+7. Run analysis and review drift score, timeline, issues, and fix suggestions.
 
----
+## Notes
 
-## 📝 License
+- The default database is `backend/infrapilot.db`.
+- The backend loads environment variables with `python-dotenv`.
+- CORS is currently open for development.
+- The current frontend uses hardcoded backend URLs pointing to `http://localhost:8000`.
+- Rule-engine fallback keeps the app usable even when AI providers are not configured.
 
-This is a personal poject but iam open to pull requests and enhancements. Developed by Adnan.
+## License
 
----
-
-## Acknowledgments
-
-- **Cline** - For CLI automation and patch generation
-- **Oumi** - For RL-based scoring capabilities
-- **Ollama** - For local LLM inference
-- **Gemini** - For cloud-based AI analysis
-
----
-
-<div align="center">
-
-**Built with ❤️ by Adnan for infrastructure reliability**
-
-[Report Bug](https://github.com/your-repo/issues) • [Request Feature](https://github.com/your-repo/issues)
-
-</div>
-
+Personal project by Adnan. Pull requests and enhancements are welcome.

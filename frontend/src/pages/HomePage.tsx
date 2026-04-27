@@ -1,7 +1,55 @@
 import { HeroSection } from "@/components/blocks/hero-section-3";
 import AnimatedFooter from "@/components/ui/animated-footer";
+import { motion, Variants } from "framer-motion";
 import { Shield, Zap, BarChart3, Lock, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+
+const sectionReveal: Variants = {
+  hidden: { opacity: 0, filter: "blur(12px)", y: 36 },
+  visible: {
+    opacity: 1,
+    filter: "blur(0px)",
+    y: 0,
+    transition: {
+      type: "spring",
+      bounce: 0.22,
+      duration: 1.15,
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemReveal: Variants = {
+  hidden: { opacity: 0, filter: "blur(10px)", y: 24 },
+  visible: {
+    opacity: 1,
+    filter: "blur(0px)",
+    y: 0,
+    transition: { type: "spring", bounce: 0.2, duration: 0.9 },
+  },
+};
+
+const imageRevealLeft: Variants = {
+  hidden: { opacity: 0, filter: "blur(12px)", x: -36 },
+  visible: {
+    opacity: 1,
+    filter: "blur(0px)",
+    x: 0,
+    transition: { type: "spring", bounce: 0.18, duration: 1 },
+  },
+};
+
+const imageRevealRight: Variants = {
+  hidden: { opacity: 0, filter: "blur(12px)", x: 36 },
+  visible: {
+    opacity: 1,
+    filter: "blur(0px)",
+    x: 0,
+    transition: { type: "spring", bounce: 0.18, duration: 1 },
+  },
+};
+
+const viewportReveal = { once: true, amount: 0.22 };
 
 export default function HomePage() {
   return (
@@ -10,16 +58,22 @@ export default function HomePage() {
 
       {/* Features Section */}
       <section id="features" className="py-24 bg-[#f5f5f7]">
-        <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-3xl md:text-5xl font-semibold text-center mb-4">
+        <motion.div
+          className="max-w-5xl mx-auto px-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportReveal}
+          variants={sectionReveal}
+        >
+          <motion.h2 variants={itemReveal} className="text-3xl md:text-5xl font-semibold text-center mb-4">
             Why InfraPilot?
-          </h2>
-          <p className="text-[#6e6e73] text-center text-lg mb-16 max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p variants={itemReveal} className="text-[#6e6e73] text-center text-lg mb-16 max-w-2xl mx-auto">
             Detect misconfigurations, predict drift timelines, and auto-generate
             fixes before your infrastructure breaks.
-          </p>
+          </motion.p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <motion.div variants={sectionReveal} className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <FeatureCard
               icon={<Shield className="w-8 h-8 text-[#0071e3]" />}
               title="Security First"
@@ -40,38 +94,44 @@ export default function HomePage() {
               title="Privacy Focused"
               desc="Run analysis entirely offline with local Ollama models—no data leaves your machine."
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* About */}
       <section id="about" className="py-24 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
+        <motion.div
+          className="max-w-5xl mx-auto px-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportReveal}
+          variants={sectionReveal}
+        >
           <div className="flex flex-col md:flex-row gap-12 items-center">
-            <div className="flex-1">
+            <motion.div variants={imageRevealLeft} className="flex-1">
               <img
                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
                 alt="Team collaboration"
                 className="rounded-2xl shadow-xl w-full"
               />
-            </div>
-            <div className="flex-1 space-y-6">
-              <h2 className="text-3xl md:text-5xl font-semibold mb-4">
+            </motion.div>
+            <motion.div variants={sectionReveal} className="flex-1 space-y-6">
+              <motion.h2 variants={itemReveal} className="text-3xl md:text-5xl font-semibold mb-4">
                 About InfraPilot
-              </h2>
-              <p className="text-[#6e6e73] text-lg leading-relaxed">
+              </motion.h2>
+              <motion.p variants={itemReveal} className="text-[#6e6e73] text-lg leading-relaxed">
                 InfraPilot was born from a simple observation: infrastructure
                 drift is the silent killer of cloud reliability. We watched teams
                 spend hours in war rooms tracing misconfigurations that could
                 have been caught in minutes.
-              </p>
-              <p className="text-[#6e6e73] text-lg leading-relaxed">
+              </motion.p>
+              <motion.p variants={itemReveal} className="text-[#6e6e73] text-lg leading-relaxed">
                 Our mission is to give DevOps and platform engineers an
                 AI-powered co-pilot that continuously scans Terraform and
                 Kubernetes manifests, predicts drift before it happens, and
                 suggests precise fixes—so you ship faster and sleep better.
-              </p>
-              <div className="grid grid-cols-2 gap-6 pt-4">
+              </motion.p>
+              <motion.div variants={itemReveal} className="grid grid-cols-2 gap-6 pt-4">
                 <div>
                   <div className="text-3xl font-semibold text-[#0071e3]">10k+</div>
                   <div className="text-sm text-[#6e6e73]">Analyses run</div>
@@ -80,20 +140,26 @@ export default function HomePage() {
                   <div className="text-3xl font-semibold text-[#0071e3]">99.9%</div>
                   <div className="text-sm text-[#6e6e73]">Uptime protected</div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* How it works */}
       <section id="how-it-works" className="py-24 bg-[#f5f5f7]">
-        <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-3xl md:text-5xl font-semibold text-center mb-16">
+        <motion.div
+          className="max-w-5xl mx-auto px-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportReveal}
+          variants={sectionReveal}
+        >
+          <motion.h2 variants={itemReveal} className="text-3xl md:text-5xl font-semibold text-center mb-16">
             How it works
-          </h2>
+          </motion.h2>
           <div className="flex flex-col md:flex-row gap-12 items-center">
-            <div className="flex-1 space-y-8">
+            <motion.div variants={sectionReveal} className="flex-1 space-y-8">
               <Step
                 number="01"
                 title="Paste your code"
@@ -109,28 +175,34 @@ export default function HomePage() {
                 title="Get insights"
                 desc="Receive a drift score, timeline, and actionable fix suggestions instantly."
               />
-            </div>
-            <div className="flex-1">
+            </motion.div>
+            <motion.div variants={imageRevealRight} className="flex-1">
               <img
                 src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
                 alt="Dashboard preview"
                 className="rounded-2xl shadow-xl w-full"
               />
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Pricing teaser */}
       <section id="pricing" className="py-24 bg-[#f5f5f7]">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-5xl font-semibold mb-4">
+        <motion.div
+          className="max-w-3xl mx-auto px-6 text-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportReveal}
+          variants={sectionReveal}
+        >
+          <motion.h2 variants={itemReveal} className="text-3xl md:text-5xl font-semibold mb-4">
             Simple pricing
-          </h2>
-          <p className="text-[#6e6e73] text-lg mb-12">
+          </motion.h2>
+          <motion.p variants={itemReveal} className="text-[#6e6e73] text-lg mb-12">
             Start free. Scale as your infrastructure grows.
-          </p>
-          <div className="bg-white rounded-[18px] p-8 shadow-sm border border-[#d2d2d7]">
+          </motion.p>
+          <motion.div variants={itemReveal} className="bg-white rounded-[18px] p-8 shadow-sm border border-[#d2d2d7]">
             <h3 className="text-2xl font-semibold mb-2">Free tier</h3>
             <p className="text-[#6e6e73] mb-6">
               Everything you need to get started.
@@ -165,8 +237,8 @@ export default function HomePage() {
                 Get Started
               </Link>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       <AnimatedFooter
@@ -199,11 +271,11 @@ function FeatureCard({
   desc: string;
 }) {
   return (
-    <div className="bg-white rounded-[18px] p-6 border border-[#d2d2d7] hover:shadow-md transition-shadow">
+    <motion.div variants={itemReveal} className="bg-white rounded-[18px] p-6 border border-[#d2d2d7] hover:shadow-md transition-shadow">
       <div className="mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
       <p className="text-[#6e6e73] text-sm leading-relaxed">{desc}</p>
-    </div>
+    </motion.div>
   );
 }
 
@@ -217,12 +289,12 @@ function Step({
   desc: string;
 }) {
   return (
-    <div className="flex gap-4">
+    <motion.div variants={itemReveal} className="flex gap-4">
       <div className="text-2xl font-semibold text-[#0071e3]">{number}</div>
       <div>
         <h4 className="text-lg font-semibold mb-1">{title}</h4>
         <p className="text-[#6e6e73] text-sm">{desc}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }

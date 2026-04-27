@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { Mail, SendHorizonal, Menu, X } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { cn } from '@/lib/utils'
@@ -27,11 +28,11 @@ export function HeroSection() {
                                 <h1 className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl text-[#1d1d1f]">AI-Powered Infrastructure Drift Detection</h1>
                                 <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-[#6e6e73]">Detect misconfigurations, predict drift timelines, and auto-generate fixes before your infrastructure breaks. Powered by multi-provider AI.</p>
                                 <div className="mt-12 mx-auto max-w-sm">
-                                    <div className="bg-white relative grid grid-cols-[1fr_auto] pr-1.5 items-center rounded-[1rem] border border-[#d2d2d7] shadow shadow-zinc-950/5 has-[input:focus]:ring-2 has-[input:focus]:ring-[#0071e3]/30 lg:pr-0">
+                                    <div className="bg-white relative grid grid-cols-[1fr_auto] items-center rounded-[1rem] border border-[#d2d2d7] p-1 shadow shadow-zinc-950/5 has-[input:focus]:ring-2 has-[input:focus]:ring-[#0071e3]/30">
                                         <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4 text-[#86868b]" />
-                                        <input placeholder="Enter your email" className="h-12 w-full bg-transparent pl-12 focus:outline-none text-[#1d1d1f] placeholder:text-[#86868b]" type="email" />
-                                        <div className="md:pr-1.5 lg:pr-0">
-                                            <Button asChild size="sm" className="rounded-[0.5rem] bg-[#0071e3] hover:bg-[#0077ed] text-white">
+                                        <input placeholder="Enter your email" className="h-11 min-w-0 w-full bg-transparent pl-12 pr-3 focus:outline-none text-[#1d1d1f] placeholder:text-[#86868b]" type="email" />
+                                        <div>
+                                            <Button asChild size="sm" className="h-10 rounded-[0.7rem] bg-[#0071e3] px-5 text-white shadow-sm shadow-blue-600/20 hover:bg-[#0077ed]">
                                                 <Link to="/login"><span className="hidden md:block">Get Started</span><SendHorizonal className="relative mx-auto size-5 md:hidden" strokeWidth={2} /></Link>
                                             </Button>
                                         </div>
@@ -101,6 +102,36 @@ const menuItems = [
     { name: 'About', href: '#about' },
 ]
 
+const makeLogoSrc = (label: string, initials: string, accent: string) => {
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="190" height="44" viewBox="0 0 190 44">
+            <rect width="190" height="44" rx="12" fill="white"/>
+            <rect x="1" y="1" width="188" height="42" rx="11" fill="none" stroke="#E5E7EB"/>
+            <rect x="14" y="10" width="24" height="24" rx="7" fill="${accent}"/>
+            <path d="M20 27L26 15L32 27" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="26" cy="27" r="2.3" fill="white"/>
+            <text x="50" y="27" fill="#1D1D1F" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">${label}</text>
+            <text x="16" y="27" fill="white" font-family="Inter, Arial, sans-serif" font-size="8" font-weight="800" opacity=".2">${initials}</text>
+        </svg>
+    `
+
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+}
+
+const customerLogos = [
+    { label: 'DriftOps', initials: 'DO', accent: '#0071E3' },
+    { label: 'KubeGrid', initials: 'KG', accent: '#635BFF' },
+    { label: 'TerraGuard', initials: 'TG', accent: '#10B981' },
+    { label: 'CloudForge', initials: 'CF', accent: '#F97316' },
+    { label: 'OpsLens', initials: 'OL', accent: '#0EA5E9' },
+    { label: 'StackPulse', initials: 'SP', accent: '#8B5CF6' },
+    { label: 'VaultRun', initials: 'VR', accent: '#111827' },
+    { label: 'NodeWorks', initials: 'NW', accent: '#22C55E' },
+].map((logo) => ({
+    ...logo,
+    src: makeLogoSrc(logo.label, logo.initials, logo.accent),
+}))
+
 const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
@@ -113,49 +144,178 @@ const HeroHeader = () => {
 
     return (
         <header>
-            <nav data-state={menuState && 'active'} className="fixed group z-20 w-full px-2">
-                <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-white/80 max-w-4xl rounded-2xl border border-[#d2d2d7] backdrop-blur-lg lg:px-5')}>
-                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-                        <div className="flex w-full justify-between lg:w-auto">
-                            <Link to="/" aria-label="home" className="flex items-center space-x-2">
-                                <Logo />
-                            </Link>
-                            <button onClick={() => setMenuState(!menuState)} aria-label={menuState == true ? 'Close Menu' : 'Open Menu'} className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
-                                <Menu className="group-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
-                            </button>
-                        </div>
+            <motion.nav
+                className="fixed z-20 w-full px-2"
+                initial={{ opacity: 0, filter: 'blur(14px)', y: -18 }}
+                animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                transition={{ type: 'spring', bounce: 0.18, duration: 1.1, delay: 0.15 }}
+            >
+                <motion.div
+                    layout
+                    transition={{ layout: { type: 'spring', bounce: 0.18, duration: 0.75 } }}
+                    className={cn(
+                        'mx-auto mt-2 px-5 lg:px-8',
+                        isScrolled
+                            ? 'max-w-4xl bg-white/80 rounded-2xl border border-[#d2d2d7] shadow-lg shadow-zinc-950/5 backdrop-blur-lg lg:px-5'
+                            : 'max-w-5xl'
+                    )}
+                >
+                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-2.5 lg:gap-0 lg:py-3">
+                        <motion.div layout className="flex w-full justify-between lg:w-auto">
+                            <motion.div whileHover={{ y: -1 }} whileTap={{ scale: 0.98 }}>
+                                <Link to="/" aria-label="home" className="flex items-center space-x-2">
+                                    <Logo />
+                                </Link>
+                            </motion.div>
+                            <motion.button
+                                onClick={() => setMenuState(!menuState)}
+                                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
+                                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+                                whileTap={{ scale: 0.92 }}
+                            >
+                                <AnimatePresence initial={false} mode="wait">
+                                    {menuState ? (
+                                        <motion.span
+                                            key="close"
+                                            className="block"
+                                            initial={{ opacity: 0, rotate: -90, scale: 0.72 }}
+                                            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                            exit={{ opacity: 0, rotate: 90, scale: 0.72 }}
+                                            transition={{ type: 'spring', bounce: 0.25, duration: 0.35 }}
+                                        >
+                                            <X className="m-auto size-6" />
+                                        </motion.span>
+                                    ) : (
+                                        <motion.span
+                                            key="menu"
+                                            className="block"
+                                            initial={{ opacity: 0, rotate: 90, scale: 0.72 }}
+                                            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                            exit={{ opacity: 0, rotate: -90, scale: 0.72 }}
+                                            transition={{ type: 'spring', bounce: 0.25, duration: 0.35 }}
+                                        >
+                                            <Menu className="m-auto size-6" />
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </motion.button>
+                        </motion.div>
                         <div className="absolute inset-0 m-auto hidden size-fit lg:block">
-                            <ul className="flex gap-8 text-sm">
+                            <motion.ul
+                                className="flex gap-8 text-sm"
+                                initial="hidden"
+                                animate="visible"
+                                variants={{
+                                    hidden: {},
+                                    visible: { transition: { staggerChildren: 0.08, delayChildren: 0.35 } },
+                                }}
+                            >
                                 {menuItems.map((item, index) => (
-                                    <li key={index}>
-                                        <a href={item.href} className="text-[#6e6e73] hover:text-[#1d1d1f] block duration-150"><span>{item.name}</span></a>
-                                    </li>
+                                    <motion.li
+                                        key={index}
+                                        variants={{
+                                            hidden: { opacity: 0, filter: 'blur(8px)', y: -8 },
+                                            visible: { opacity: 1, filter: 'blur(0px)', y: 0, transition: { type: 'spring', bounce: 0.24, duration: 0.65 } },
+                                        }}
+                                        whileHover={{ y: -2 }}
+                                    >
+                                        <a href={item.href} className="group/link relative block py-2 text-[#6e6e73] duration-200 hover:text-[#1d1d1f]">
+                                            <span>{item.name}</span>
+                                            <span className="absolute inset-x-0 -bottom-0.5 mx-auto h-px w-0 bg-[#0071e3] transition-all duration-300 group-hover/link:w-full" />
+                                        </a>
+                                    </motion.li>
                                 ))}
-                            </ul>
+                            </motion.ul>
                         </div>
-                        <div className="bg-white group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border border-[#d2d2d7] p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none">
-                            <div className="lg:hidden">
-                                <ul className="space-y-6 text-base">
-                                    {menuItems.map((item, index) => (
-                                        <li key={index}>
-                                            <a href={item.href} className="text-[#6e6e73] hover:text-[#1d1d1f] block duration-150"><span>{item.name}</span></a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                                <Button asChild variant="outline" size="sm" className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link to="/login"><span>Login</span></Link>
-                                </Button>
-                                <Button asChild size="sm" className={cn(isScrolled ? 'lg:inline-flex' : 'hidden', 'bg-[#0071e3] hover:bg-[#0077ed] text-white')}>
-                                    <Link to="/login"><span>Get Started</span></Link>
-                                </Button>
-                            </div>
-                        </div>
+                        <motion.div layout className="hidden w-fit items-center justify-end gap-3 lg:flex">
+                            <AnimatePresence initial={false} mode="popLayout">
+                                {!isScrolled && (
+                                    <motion.div
+                                        key="login"
+                                        initial={{ opacity: 0, filter: 'blur(8px)', x: 12 }}
+                                        animate={{ opacity: 1, filter: 'blur(0px)', x: 0 }}
+                                        exit={{ opacity: 0, filter: 'blur(8px)', x: 12 }}
+                                        transition={{ type: 'spring', bounce: 0.2, duration: 0.45 }}
+                                        whileHover={{ y: -1 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        <Button asChild variant="outline" size="sm">
+                                            <Link to="/login"><span>Login</span></Link>
+                                        </Button>
+                                    </motion.div>
+                                )}
+                                {isScrolled && (
+                                    <motion.div
+                                        key="get-started"
+                                        initial={{ opacity: 0, filter: 'blur(8px)', x: 12 }}
+                                        animate={{ opacity: 1, filter: 'blur(0px)', x: 0 }}
+                                        exit={{ opacity: 0, filter: 'blur(8px)', x: 12 }}
+                                        transition={{ type: 'spring', bounce: 0.2, duration: 0.45 }}
+                                        whileHover={{ y: -1 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        <Button asChild size="sm" className="bg-[#0071e3] text-white hover:bg-[#0077ed]">
+                                            <Link to="/login"><span>Get Started</span></Link>
+                                        </Button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
                     </div>
-                </div>
-            </nav>
+                    <AnimatePresence>
+                        {menuState && (
+                            <motion.div
+                                className="mb-4 origin-top overflow-hidden rounded-3xl border border-[#d2d2d7] bg-white p-6 shadow-2xl shadow-zinc-300/20 will-change-transform lg:hidden"
+                                initial={{ opacity: 0, scaleY: 0.96, y: -8 }}
+                                animate={{ opacity: 1, scaleY: 1, y: 0 }}
+                                exit={{ opacity: 0, scaleY: 0.96, y: -8 }}
+                                transition={{ type: 'spring', bounce: 0.12, duration: 0.38 }}
+                            >
+                                <motion.ul
+                                    className="space-y-5 text-base"
+                                    initial="hidden"
+                                    animate="visible"
+                                    variants={{
+                                        hidden: {},
+                                        visible: { transition: { staggerChildren: 0.07, delayChildren: 0.06 } },
+                                    }}
+                                >
+                                    {menuItems.map((item, index) => (
+                                        <motion.li
+                                            key={index}
+                                            variants={{
+                                                hidden: { opacity: 0, x: -10 },
+                                                visible: { opacity: 1, x: 0, transition: { type: 'spring', bounce: 0.18, duration: 0.36 } },
+                                            }}
+                                        >
+                                            <a
+                                                href={item.href}
+                                                onClick={() => setMenuState(false)}
+                                                className="block text-[#6e6e73] duration-150 hover:text-[#1d1d1f]"
+                                            >
+                                                <span>{item.name}</span>
+                                            </a>
+                                        </motion.li>
+                                    ))}
+                                </motion.ul>
+                                <motion.div
+                                    className="mt-6 flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.16, type: 'spring', bounce: 0.2, duration: 0.45 }}
+                                >
+                                    <Button asChild variant="outline" size="sm">
+                                        <Link to="/login"><span>Login</span></Link>
+                                    </Button>
+                                    <Button asChild size="sm" className="bg-[#0071e3] text-white hover:bg-[#0077ed]">
+                                        <Link to="/login"><span>Get Started</span></Link>
+                                    </Button>
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </motion.div>
+            </motion.nav>
         </header>
     )
 }
@@ -170,14 +330,11 @@ const LogoCloud = () => {
                     </div>
                     <div className="relative py-6 md:w-[calc(100%-11rem)]">
                         <InfiniteSlider durationOnHover={20} duration={40} gap={112}>
-                            <div className="flex"><img className="mx-auto h-5 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/nvidia.svg" alt="Nvidia Logo" height="20" width="auto" /></div>
-                            <div className="flex"><img className="mx-auto h-4 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/column.svg" alt="Column Logo" height="16" width="auto" /></div>
-                            <div className="flex"><img className="mx-auto h-4 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/github.svg" alt="GitHub Logo" height="16" width="auto" /></div>
-                            <div className="flex"><img className="mx-auto h-5 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/nike.svg" alt="Nike Logo" height="20" width="auto" /></div>
-                            <div className="flex"><img className="mx-auto h-5 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/lemonsqueezy.svg" alt="Lemon Squeezy Logo" height="20" width="auto" /></div>
-                            <div className="flex"><img className="mx-auto h-4 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/laravel.svg" alt="Laravel Logo" height="16" width="auto" /></div>
-                            <div className="flex"><img className="mx-auto h-7 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/lilly.svg" alt="Lilly Logo" height="28" width="auto" /></div>
-                            <div className="flex"><img className="mx-auto h-6 w-fit dark:invert" src="https://html.tailus.io/blocks/customers/openai.svg" alt="OpenAI Logo" height="24" width="auto" /></div>
+                            {customerLogos.map((logo) => (
+                                <div className="flex" key={logo.label}>
+                                    <img className="mx-auto h-11 w-[190px] object-contain opacity-80 transition-opacity group-hover:opacity-100" src={logo.src} alt={`${logo.label} logo`} height="44" width="190" />
+                                </div>
+                            ))}
                         </InfiniteSlider>
                         <div className="bg-gradient-to-r from-white absolute inset-y-0 left-0 w-20"></div>
                         <div className="bg-gradient-to-l from-white absolute inset-y-0 right-0 w-20"></div>
