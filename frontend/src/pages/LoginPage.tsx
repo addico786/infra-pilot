@@ -5,6 +5,7 @@ import { ImageSlider } from "@/components/ui/image-slider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { apiUrl } from "@/api/client"
 import { Globe, Apple } from "lucide-react"
 
 const images = [
@@ -54,7 +55,7 @@ export default function LoginPage() {
       const endpoint = isRegister ? "/auth/register" : "/auth/token"
       let res: Response
       if (isRegister) {
-        res = await fetch("http://localhost:8000" + endpoint, {
+        res = await fetch(apiUrl(endpoint), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
@@ -69,7 +70,7 @@ export default function LoginPage() {
         const formData = new URLSearchParams()
         formData.append("username", email)
         formData.append("password", password)
-        res = await fetch("http://localhost:8000" + endpoint, {
+        res = await fetch(apiUrl(endpoint), {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: formData,

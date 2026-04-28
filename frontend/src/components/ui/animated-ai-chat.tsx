@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
+import { apiUrl } from "@/api/client";
 import {
   Paperclip, Command, Sparkles, XIcon,
   LoaderIcon, ChevronDown, FileCode, Server, Cloud,
@@ -115,7 +116,7 @@ export function AnimatedAIChat() {
     try {
       const body: Record<string, unknown> = { content, file_type: fileType, model };
       if (email.trim()) body.email = email.trim();
-      const res = await fetch("http://localhost:8000/analyze", {
+      const res = await fetch(apiUrl("/analyze"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -200,7 +201,7 @@ export function AnimatedAIChat() {
 
       {/* Header */}
       <motion.header
-        className="relative z-10 flex items-center justify-between mb-6"
+        className="relative z-30 flex items-center justify-between mb-6"
         initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
       >
         <div className="flex items-center gap-2.5">
@@ -209,7 +210,7 @@ export function AnimatedAIChat() {
           </div>
           <span className="font-semibold text-lg tracking-tight">InfraPilot</span>
         </div>
-        <div className="relative group">
+        <div className="relative z-30 group">
           <button className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs text-white/70 hover:text-white transition-colors border border-white/5">
             <Server className="w-3 h-3" />
             <span className="max-w-[120px] truncate">{currentModelLabel}</span>
